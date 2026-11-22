@@ -7,9 +7,17 @@ import { TOOLS, type ToolMeta } from './tools.ts';
 
 // Each tool is its own chunk so the landing route stays small.
 const Merge = lazy(() => import('./tools/Merge.tsx'));
+const Split = lazy(() => import('./tools/Split.tsx'));
+const Organize = lazy(() => import('./tools/Organize.tsx'));
+const PageNumbers = lazy(() => import('./tools/PageNumbers.tsx'));
+const Watermark = lazy(() => import('./tools/Watermark.tsx'));
 
 const ROUTES: Record<string, (tool: ToolMeta) => ReactNode> = {
   '/merge': (tool) => <Merge tool={tool} />,
+  '/split': (tool) => <Split tool={tool} />,
+  '/organize': (tool) => <Organize tool={tool} />,
+  '/page-numbers': (tool) => <PageNumbers tool={tool} />,
+  '/watermark': (tool) => <Watermark tool={tool} />,
 };
 
 export function App() {

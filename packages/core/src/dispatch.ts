@@ -1,11 +1,18 @@
 import { PdfToolsError } from './errors.ts';
 import { merge } from './ops/merge.ts';
+import { organize } from './ops/organize.ts';
+import { split } from './ops/split.ts';
+import { pageNumbers, watermark } from './ops/stamp-ops.ts';
 import type { OpArgs, OpContext, OpName, OpOutput } from './protocol.ts';
 
 type Registry = { [K in OpName]: (args: OpArgs[K], ctx: OpContext) => Promise<OpOutput> };
 
 const registry: Registry = {
   merge,
+  split,
+  organize,
+  pageNumbers,
+  watermark,
 };
 
 export function isOpName(op: unknown): op is OpName {

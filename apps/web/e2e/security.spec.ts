@@ -3,7 +3,7 @@ import { contentSecurityPolicy } from '../security-headers.ts';
 import { expect, test } from './fixtures.ts';
 
 test('every route is served with the strict CSP and security headers', async ({ request }) => {
-  for (const path of ['/', '/merge', '/does-not-exist']) {
+  for (const path of ['/', '/merge', '/organize', '/does-not-exist']) {
     const res = await request.get(path);
     const headers = res.headers();
     expect(headers['content-security-policy']).toBe(contentSecurityPolicy());

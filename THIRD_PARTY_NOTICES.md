@@ -4,11 +4,12 @@ pdf-tools is licensed under AGPL-3.0-only (see `LICENSE`). It ships the followin
 software in its browser bundle. Each keeps its own license; the full texts are in the packages
 under `node_modules/<name>/` and are included in release artifacts.
 
-| Component                                                                                                     | License                          | Used for                                        |
-| ------------------------------------------------------------------------------------------------------------- | -------------------------------- | ----------------------------------------------- |
-| [pdf-lib](https://github.com/Hopding/pdf-lib)                                                                 | MIT                              | Creating and editing PDFs                       |
-| [pdf.js / pdfjs-dist](https://github.com/mozilla/pdf.js)                                                      | Apache-2.0                       | Rendering pages and thumbnails                  |
-| [React, React DOM](https://github.com/facebook/react)                                                         | MIT                              | User interface                                  |
+| Component | License | Used for |
+| --- | --- | --- |
+| [pdf-lib](https://github.com/Hopding/pdf-lib) | MIT | Creating and editing PDFs |
+| [pdf.js / pdfjs-dist](https://github.com/mozilla/pdf.js) | Apache-2.0 | Thumbnails; its fonts, CMaps, ICC profiles and image decoders (OpenJPEG BSD-2, JBIG2 Apache-2.0, qcms MIT) are copied from the package; the scripting engine is excluded |
+| [React, React DOM](https://github.com/facebook/react) | MIT | User interface |
+| [fflate](https://github.com/101arrowz/fflate) | MIT | Zip downloads for multi-file results |
 | [qpdf](https://github.com/qpdf/qpdf) via [@neslinesli93/qpdf-wasm](https://github.com/neslinesli93/qpdf-wasm) | Apache-2.0 (qpdf), ISC (wrapper) | Validation in tests; encryption tools (from M4) |
 
 Development-only tools (Vite, Vitest, Playwright, ESLint, TypeScript and their dependencies) are

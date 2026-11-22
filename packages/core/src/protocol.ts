@@ -1,5 +1,8 @@
 import type { OpError } from './errors.ts';
 import type { MergeArgs } from './ops/merge.ts';
+import type { OrganizeArgs } from './ops/organize.ts';
+import type { SplitArgs } from './ops/split.ts';
+import type { PageNumbersArgs, WatermarkArgs } from './ops/stamp-ops.ts';
 
 /** A file produced by an operation. */
 export interface OutputFile {
@@ -15,6 +18,10 @@ export interface OpOutput {
 /** Every operation's argument type, keyed by op name. Adding an op = one line here + one in registry. */
 export interface OpArgs {
   merge: MergeArgs;
+  split: SplitArgs;
+  organize: OrganizeArgs;
+  pageNumbers: PageNumbersArgs;
+  watermark: WatermarkArgs;
 }
 
 export type OpName = keyof OpArgs;

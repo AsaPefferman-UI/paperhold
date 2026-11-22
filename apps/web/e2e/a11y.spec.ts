@@ -9,7 +9,15 @@ async function expectNoAxeViolations(page: Page) {
   expect(results.violations).toEqual([]);
 }
 
-for (const path of ['/', '/merge', '/no-such-tool']) {
+for (const path of [
+  '/',
+  '/merge',
+  '/split',
+  '/organize',
+  '/page-numbers',
+  '/watermark',
+  '/no-such-tool',
+]) {
   test(`no axe violations on ${path}`, async ({ page }) => {
     await page.goto(path);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
@@ -25,5 +33,14 @@ test('no axe violations on merge with files and a result', async ({ page }) => {
   await expectNoAxeViolations(page);
   await page.getByRole('button', { name: 'Merge 2 PDFs' }).click();
   await expect(page.getByText('Done on this device. Nothing was uploaded.')).toBeVisible();
+  await expectNoAxeViolations(page);
+});
+
+test('no axe violations on organize with thumbnails', async ({ page }) => {
+  await page.goto('/organize');
+  await page.getByLabel('Choose a PDF or drop it here').setInputFiles(fixture('simple.pdf'));
+  await expect(
+    page.getByRole('list', { name: 'Pages, in output order' }).locator('img'),
+  ).toHaveCount(3);
   await expectNoAxeViolations(page);
 });

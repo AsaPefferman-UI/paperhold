@@ -22,7 +22,7 @@ anyone, including us.
 | Tool                                                        | Status       |
 | ----------------------------------------------------------- | ------------ |
 | Merge PDFs                                                  | Available    |
-| Split, reorder/rotate/delete pages, page numbers, watermark | Planned (M2) |
+| Split, organize (reorder/rotate/delete), page numbers, watermark | Available |
 | Images to PDF, PDF to images, compress                      | Planned (M3) |
 | Fill forms, visual signature, password protect/unlock       | Planned (M4) |
 | OCR (make scans searchable)                                 | Planned (M5) |

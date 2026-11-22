@@ -1,7 +1,16 @@
 // Build-time plugin: response headers for preview and Cloudflare Pages, per-route HTML for SEO,
 // and a sitemap. Keeps the static output self-describing so any static host can serve it.
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import {
+  cpSync,
+  createReadStream,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
+import { createRequire } from 'node:module';
+import { dirname, join, normalize, sep } from 'node:path';
 import type { Plugin } from 'vite';
 import { securityHeaders } from '../security-headers.ts';
 import { SITE_NAME, TOOLS } from '../src/tools.ts';
@@ -25,18 +34,52 @@ export function headersFile(analyticsOrigin: string): string {
     ...lines,
     '/assets/*',
     '  Cache-Control: public, max-age=31536000, immutable',
+    '/pdfjs-*',
+    '  Cache-Control: public, max-age=31536000, immutable',
     '/sw.js',
     '  Cache-Control: no-cache',
     '',
   ].join('\n');
 }
 
+// pdf.js data files (fonts, CMaps, image decoders) are self-hosted under a versioned path so
+// they can be cached immutably. The scripting engine (quickjs) is deliberately not shipped.
+const pdfjsDir = dirname(createRequire(import.meta.url).resolve('pdfjs-dist/package.json'));
+const pdfjsVersion = (
+  JSON.parse(readFileSync(join(pdfjsDir, 'package.json'), 'utf8')) as { version: string }
+).version;
+export const PDFJS_BASE = `/pdfjs-${pdfjsVersion}/`;
+const PDFJS_DIRS = ['cmaps', 'standard_fonts', 'wasm', 'iccs'];
+const shipPdfjsFile = (rel: string) => !/quickjs/i.test(rel);
+
 export function sitePlugin({ analyticsOrigin = '', siteUrl = '' } = {}): Plugin {
   let outDir = 'dist';
   return {
     name: 'pdf-tools-site',
+    config() {
+      return { define: { __PDFJS_BASE__: JSON.stringify(PDFJS_BASE) } };
+    },
     configResolved(config) {
       outDir = config.build.outDir;
+    },
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (!req.url?.startsWith(PDFJS_BASE)) return next();
+        const rel = normalize(decodeURIComponent(req.url.slice(PDFJS_BASE.length).split('?')[0]!));
+        const file = join(pdfjsDir, rel);
+        if (
+          rel.startsWith('..') ||
+          !PDFJS_DIRS.includes(rel.split(sep)[0]!) ||
+          !shipPdfjsFile(rel) ||
+          !existsSync(file) ||
+          !statSync(file).isFile()
+        ) {
+          res.statusCode = 404;
+          return res.end();
+        }
+        if (file.endsWith('.wasm')) res.setHeader('Content-Type', 'application/wasm');
+        createReadStream(file).pipe(res);
+      });
     },
     configurePreviewServer(server) {
       const headers = securityHeaders(analyticsOrigin);
@@ -60,6 +103,12 @@ export function sitePlugin({ analyticsOrigin = '', siteUrl = '' } = {}): Plugin 
         withMeta(index, `Page not found | ${SITE_NAME}`, 'There is no tool at this address.'),
       );
       writeFileSync(join(outDir, '_headers'), headersFile(analyticsOrigin));
+      for (const dir of PDFJS_DIRS) {
+        cpSync(join(pdfjsDir, dir), join(outDir, PDFJS_BASE, dir), {
+          recursive: true,
+          filter: (src) => shipPdfjsFile(src),
+        });
+      }
       if (siteUrl) {
         const urls = ['/', ...TOOLS.map((t) => t.path)].map(
           (p) => `  <url><loc>${siteUrl}${p}</loc></url>`,

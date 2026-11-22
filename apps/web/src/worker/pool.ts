@@ -147,7 +147,7 @@ let shared: WorkerPool | undefined;
 /** The app-wide pool, created on first use so the landing page never spawns workers. */
 export function pool(): WorkerPool {
   shared ??= new WorkerPool(
-    () => new Worker(new URL('./pdf.worker.ts', import.meta.url), { type: 'module' }) as WorkerLike,
+    () => new Worker(new URL('./ops.worker.ts', import.meta.url), { type: 'module' }) as WorkerLike,
   );
   return shared;
 }

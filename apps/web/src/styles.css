@@ -6,6 +6,7 @@
   --manila-edge: #b8953f;
   --on-manila: #1b2130;
   --paper: #ffffff;
+  --pdf-page: #ffffff;
   --paper-edge: #d9cba3;
   --ink: #1b2130;
   --ink-soft: #464d5e;
@@ -588,6 +589,194 @@ a:hover {
   color: var(--ink-soft);
 }
 
+/* Forms */
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  margin-bottom: var(--space-4);
+}
+
+.fields .field {
+  margin-bottom: 0;
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.field input:not([type='range']),
+.field select {
+  font: inherit;
+  font-weight: 400;
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-3);
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--manila-edge);
+  border-radius: var(--radius);
+}
+
+.field input[type='range'] {
+  accent-color: var(--primary);
+  min-height: 2.75rem;
+}
+
+.choices {
+  border: 0;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.choice {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-3);
+  border: 1px solid var(--paper-edge);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.choice:has(input:checked) {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 6%, var(--paper));
+}
+
+.choice input {
+  margin-top: 0.25rem;
+  accent-color: var(--primary);
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.choice-label {
+  display: block;
+  font-weight: 600;
+}
+
+.choice-hint {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin: var(--space-4) 0 var(--space-3);
+}
+
+.toolbar .hint {
+  margin-right: auto;
+}
+
+.page-count {
+  margin-top: var(--space-3);
+}
+
+.single-file {
+  cursor: default;
+}
+
+/* Page thumbnails */
+.pages {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(8rem, 45%), 1fr));
+  gap: var(--space-4);
+}
+
+.page-tile {
+  position: relative;
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+  padding: var(--space-2);
+  border: 1px solid var(--paper-edge);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--manila-ground) 35%, var(--paper));
+  transition: opacity 160ms var(--ease-out);
+}
+
+.page-tile[draggable='true'] {
+  cursor: grab;
+}
+
+.page-tile[data-dragging] {
+  opacity: 0.5;
+}
+
+.page-thumb {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.page-thumb img {
+  /* 82% leaves room for a quarter-turned portrait page to stay inside the square. */
+  max-width: 82%;
+  max-height: 82%;
+  box-shadow: var(--shadow);
+  background: var(--pdf-page);
+  transition: transform 200ms var(--ease-out);
+}
+
+.page-thumb img[data-rotate='90'] {
+  transform: rotate(90deg);
+}
+
+.page-thumb img[data-rotate='180'] {
+  transform: rotate(180deg);
+}
+
+.page-thumb img[data-rotate='270'] {
+  transform: rotate(270deg);
+}
+
+.page-placeholder {
+  width: 70%;
+  aspect-ratio: 0.77;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--paper-edge) 50%, var(--paper));
+}
+
+.page-label {
+  position: absolute;
+  top: var(--space-2);
+  left: 0;
+}
+
+.page-label .tab {
+  margin-left: 0;
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.page-actions .icon-button {
+  width: 2.25rem;
+  height: 2.75rem;
+}
+
 /* Home (interim; replaced by the landing page in M6) */
 .home {
   max-width: var(--measure);
@@ -615,6 +804,21 @@ a:hover {
   font-size: 1.125rem;
 }
 
+@media (max-width: 40rem) {
+  /* One scrollable row of folder tabs instead of a wrapped stack. */
+  .band-inner nav {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .tabs {
+    flex-wrap: nowrap;
+  }
+  .tab-link {
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 30rem) {
   .sheet {
     padding: var(--space-4);
@@ -629,6 +833,9 @@ a:hover {
   .sheet-row[data-dragging],
   .button-primary:active {
     transform: none;
+  }
+  .page-thumb img {
+    transition: none;
   }
   .sheet-row {
     transition: opacity 160ms var(--ease-out);

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "schedule": ["before 6am on monday"],
+  "minimumReleaseAge": "7 days",
+  "rangeStrategy": "pin",
+  "dependencyDashboard": true,
+  "automerge": false,
+  "packageRules": [
+    { "matchUpdateTypes": ["minor", "patch"], "groupName": "non-major dependencies" },
+    {
+      "matchPackageNames": ["pdfjs-dist"],
+      "groupName": "pdf.js (security-sensitive, review release notes)",
+      "minimumReleaseAge": "3 days"
+    }
+  ],
+  "vulnerabilityAlerts": { "labels": ["security"], "minimumReleaseAge": null }
+}

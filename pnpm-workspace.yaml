@@ -1,0 +1,9 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Supply chain: no dependency may run install scripts unless allowlisted here.
+onlyBuiltDependencies: []
+strictDepBuilds: true
+# Refuse versions published less than 7 days ago (minutes).
+minimumReleaseAge: 10080

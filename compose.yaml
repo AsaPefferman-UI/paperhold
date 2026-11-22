@@ -1,0 +1,15 @@
+# docker compose up  ->  http://localhost:8080
+services:
+  web:
+    build:
+      context: .
+      args:
+        VITE_ANALYTICS_ORIGIN: ${VITE_ANALYTICS_ORIGIN:-}
+        VITE_SITE_URL: ${VITE_SITE_URL:-}
+    ports:
+      - '8080:8080'
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true

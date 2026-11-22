@@ -1,0 +1,27 @@
+name: Bug report
+description: Something did not work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Please do not attach private documents. If a specific PDF triggers the bug, describe it or share a file you are happy to make public.
+  - type: input
+    id: tool
+    attributes:
+      label: Tool
+      placeholder: e.g. Merge
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: e.g. Firefox 140 on Windows 11
+    validations:
+      required: true

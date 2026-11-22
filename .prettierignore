@@ -1,0 +1,9 @@
+dist
+coverage
+pnpm-lock.yaml
+packages/core/fixtures/corpus
+.claude
+playwright-report
+test-results
+LICENSE
+*.md

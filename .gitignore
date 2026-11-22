@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.next/
+coverage/
+.env
+.env.*
+!.env.example
+.claude/skills/
+.claude/settings.local.json
+.hallmark/
+.impeccable/
+*.log
+test-results/
+playwright-report/

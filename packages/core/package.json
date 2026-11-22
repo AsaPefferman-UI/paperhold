@@ -1,0 +1,21 @@
+{
+  "name": "@pdf-tools/core",
+  "private": true,
+  "version": "0.1.0",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./run": "./src/dispatch.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "pdf-lib": "1.17.1"
+  },
+  "devDependencies": {
+    "@neslinesli93/qpdf-wasm": "0.3.1",
+    "pdfjs-dist": "6.5.438"
+  }
+}

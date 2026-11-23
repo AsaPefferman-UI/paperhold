@@ -13,6 +13,8 @@ describe('fixture corpus', () => {
         expect(doc.getPageCount()).toBe(fx.pages);
         expect(await expectValidPdf(bytes)).toBe(fx.pages);
         if (fx.text) expect((await pageTexts(bytes))[0]).toContain(fx.text);
+      } else if (fx.kind === 'image') {
+        expect(bytes.length).toBeGreaterThan(0);
       } else if (fx.kind === 'encrypted') {
         await expect(loadPdf(bytes)).rejects.toMatchObject({ code: 'encrypted' });
       } else {

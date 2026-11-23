@@ -8,7 +8,9 @@ export type Fixture =
   | { kind: 'valid'; pages: number; text?: string; form?: boolean; images?: boolean }
   | { kind: 'encrypted'; pages: number }
   /** Must either be recovered (any page count) or rejected with one of `errors`. */
-  | { kind: 'malformed'; errors: ErrorCode[] };
+  | { kind: 'malformed'; errors: ErrorCode[] }
+  /** Image inputs for the convert tools. */
+  | { kind: 'image'; width: number; height: number };
 
 export const ENCRYPTED_PASSWORD = 'correct horse';
 
@@ -33,6 +35,11 @@ export const CORPUS: Record<string, Fixture> = {
   'not-a-pdf.pdf': { kind: 'malformed', errors: ['damaged'] },
   'empty.pdf': { kind: 'malformed', errors: ['damaged'] },
   'nested-bomb.pdf': { kind: 'malformed', errors: ['damaged', 'too_large'] },
+  'photo.jpg': { kind: 'image', width: 800, height: 600 },
+  'photo-exif-rotated.jpg': { kind: 'image', width: 800, height: 600 },
+  'graphic.png': { kind: 'image', width: 320, height: 200 },
+  'gradient.bmp': { kind: 'image', width: 160, height: 120 },
+  'pixel.gif': { kind: 'image', width: 1, height: 1 },
 };
 
 const dir = join(dirname(fileURLToPath(import.meta.url)), 'corpus');

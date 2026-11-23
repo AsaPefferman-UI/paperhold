@@ -36,3 +36,15 @@ Detector: no findings. Screens checked at 1280 (light and dark) and 375.
 | 5 | Implementation integrity | 4 | Index tabs reused for page numbers; same sheet/step structure across tools. |
 
 Open: watermark and page-number tools have no live preview yet (follow-up).
+
+## M3: Compress, Images to PDF, PDF to images
+
+Detector: no findings. Screens checked at 1280 (light) and 375 (dark).
+
+| # | Dimension | Score | Key finding |
+| --- | --- | --- | --- |
+| 1 | Accessibility | 4 | Presets are a native radio group with descriptions; savings announced as a status; axe clean on all routes (now derived from the tool registry so no tool can be missed). |
+| 2 | Performance | 4 | qpdf.wasm and libheif.wasm load only inside the worker and only when needed; landing bundle unchanged. |
+| 3 | Theming | 4 | New `.check` and `.saving` styles use tokens only. |
+| 4 | Responsive | 3 -> 4 | With eight tools the tab strip wrapped onto a second row at 1280 px: tabs are now one row beside the wordmark that scrolls sideways, and the current tab is scrolled into view on phones. |
+| 5 | Implementation integrity | 4 | A disabled-but-checked margin box was misleading when the page size follows the image: the option now only appears for fixed page sizes. |

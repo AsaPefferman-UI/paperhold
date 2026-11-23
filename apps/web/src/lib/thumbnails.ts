@@ -1,6 +1,6 @@
 // Page thumbnails with pdf.js. Parsing runs in pdf.js's own worker; only drawing the small
 // bitmaps happens on the main thread. Loaded lazily by the tools that show pages.
-import { PdfToolsError } from '@pdf-tools/core';
+import { PdfToolsError, type PageRenderer } from '@pdf-tools/core';
 import {
   getDocument,
   GlobalWorkerOptions,
@@ -61,5 +61,40 @@ export async function renderThumbnail(
   return {
     url: URL.createObjectURL(blob),
     info: { rotation: page.rotate, aspect: base.width / base.height },
+  };
+}
+
+/** A full-resolution page renderer for PDF to images (runs pdf.js on this page). */
+export async function pageRenderer(
+  bytes: ArrayBuffer,
+): Promise<PageRenderer & { destroy: () => Promise<void> }> {
+  const { doc, destroy } = await openDocument(bytes);
+  return {
+    pageCount: doc.numPages,
+    async pageSize(index) {
+      const v = (await doc.getPage(index + 1)).getViewport({ scale: 1 });
+      return { width: v.width, height: v.height };
+    },
+    async render(index, scale, type, quality) {
+      const page = await doc.getPage(index + 1);
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      const ctx = canvas.getContext('2d')!;
+      // JPEG has no transparency: paint white first so empty areas are not black.
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      await page.render({ canvas, viewport }).promise;
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, type === 'png' ? 'image/png' : 'image/jpeg', quality),
+      );
+      page.cleanup();
+      canvas.width = canvas.height = 0; // release the bitmap memory now
+      if (!blob)
+        throw new PdfToolsError('too_large', 'A page was too large to turn into an image.');
+      return new Uint8Array(await blob.arrayBuffer());
+    },
+    destroy,
   };
 }

@@ -11,6 +11,9 @@ const Split = lazy(() => import('./tools/Split.tsx'));
 const Organize = lazy(() => import('./tools/Organize.tsx'));
 const PageNumbers = lazy(() => import('./tools/PageNumbers.tsx'));
 const Watermark = lazy(() => import('./tools/Watermark.tsx'));
+const Compress = lazy(() => import('./tools/Compress.tsx'));
+const ImagesToPdf = lazy(() => import('./tools/ImagesToPdf.tsx'));
+const PdfToImages = lazy(() => import('./tools/PdfToImages.tsx'));
 
 const ROUTES: Record<string, (tool: ToolMeta) => ReactNode> = {
   '/merge': (tool) => <Merge tool={tool} />,
@@ -18,6 +21,9 @@ const ROUTES: Record<string, (tool: ToolMeta) => ReactNode> = {
   '/organize': (tool) => <Organize tool={tool} />,
   '/page-numbers': (tool) => <PageNumbers tool={tool} />,
   '/watermark': (tool) => <Watermark tool={tool} />,
+  '/compress': (tool) => <Compress tool={tool} />,
+  '/images-to-pdf': (tool) => <ImagesToPdf tool={tool} />,
+  '/pdf-to-images': (tool) => <PdfToImages tool={tool} />,
 };
 
 export function App() {

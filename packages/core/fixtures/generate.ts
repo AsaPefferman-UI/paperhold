@@ -90,7 +90,101 @@ async function scannedJpegs(): Promise<Uint8Array[]> {
   }
 }
 
+/** A landscape "photo" with an obvious top edge, rendered by a real browser as JPEG. */
+async function photoJpeg(): Promise<Uint8Array> {
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage({ viewport: { width: 800, height: 600 } });
+    await page.setContent(
+      `<body style="margin:0;height:600px;background:linear-gradient(#3a7bd5,#f5d76e)">
+         <p style="margin:0;padding:24px;font:bold 64px sans-serif;color:#111">TOP</p></body>`,
+    );
+    return await page.screenshot({ type: 'jpeg', quality: 85 });
+  } finally {
+    await browser.close();
+  }
+}
+
+/** Insert an EXIF APP1 segment carrying an orientation tag right after the JPEG SOI marker. */
+function withOrientation(jpeg: Uint8Array, orientation: number): Uint8Array {
+  const tiff = Buffer.from([
+    0x49,
+    0x49,
+    0x2a,
+    0x00,
+    0x08,
+    0x00,
+    0x00,
+    0x00, // little-endian TIFF header, IFD at 8
+    0x01,
+    0x00, // one entry
+    0x12,
+    0x01,
+    0x03,
+    0x00,
+    0x01,
+    0x00,
+    0x00,
+    0x00,
+    orientation,
+    0x00,
+    0x00,
+    0x00, // 0x0112 SHORT
+    0x00,
+    0x00,
+    0x00,
+    0x00, // no next IFD
+  ]);
+  const payload = Buffer.concat([Buffer.from([0x45, 0x78, 0x69, 0x66, 0, 0]), tiff]); // Exif header
+  const len = Buffer.alloc(2);
+  len.writeUInt16BE(payload.length + 2);
+  return Buffer.concat([
+    jpeg.subarray(0, 2),
+    Buffer.from([0xff, 0xe1]),
+    len,
+    payload,
+    jpeg.subarray(2),
+  ]);
+}
+
+/** 24-bit uncompressed BMP, bottom-up rows: decoded by the browser, not by pdf-lib. */
+function bmp(width: number, height: number): Uint8Array {
+  const row = Math.ceil((width * 3) / 4) * 4;
+  const buf = Buffer.alloc(54 + row * height);
+  buf.write('BM', 0, 'latin1');
+  buf.writeUInt32LE(buf.length, 2);
+  buf.writeUInt32LE(54, 10);
+  buf.writeUInt32LE(40, 14);
+  buf.writeInt32LE(width, 18);
+  buf.writeInt32LE(height, 22);
+  buf.writeUInt16LE(1, 26);
+  buf.writeUInt16LE(24, 28);
+  buf.writeUInt32LE(row * height, 34);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const o = 54 + y * row + x * 3;
+      buf[o] = 200; // B
+      buf[o + 1] = Math.round((y / height) * 255); // G
+      buf[o + 2] = Math.round((x / width) * 255); // R
+    }
+  }
+  return buf;
+}
+
 const files: Record<string, Uint8Array> = {};
+
+{
+  const photo = await photoJpeg();
+  files['photo.jpg'] = photo;
+  files['photo-exif-rotated.jpg'] = withOrientation(photo, 6);
+  files['graphic.png'] = png(320, 200, 7);
+  files['gradient.bmp'] = bmp(160, 120);
+  // Smallest valid GIF (1x1): exercises the browser decode path.
+  files['pixel.gif'] = Buffer.from(
+    '47494638396101000100800000000000ffffff21f90401000000002c00000000010001000002024401003b',
+    'hex',
+  );
+}
 
 files['simple.pdf'] = await save(await textDoc(3));
 files['large-page-count.pdf'] = await save(await textDoc(1000, 'Page'));

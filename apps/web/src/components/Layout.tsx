@@ -1,9 +1,16 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { Link } from '../router.tsx';
 import { SITE_NAME, TOOLS } from '../tools.ts';
 
 /** Manila band with folder tabs; the current tool's tab joins the sheet below it. */
 export function Layout({ path, children }: { path: string; children: ReactNode }) {
+  const nav = useRef<HTMLElement>(null);
+  // On narrow screens the tab strip scrolls; keep the current tool's tab in view.
+  useEffect(() => {
+    nav.current
+      ?.querySelector('[aria-current="page"]')
+      ?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [path]);
   return (
     <>
       <a className="skip-link" href="#main">
@@ -14,7 +21,7 @@ export function Layout({ path, children }: { path: string; children: ReactNode }
           <Link className="wordmark" href="/">
             {SITE_NAME}
           </Link>
-          <nav aria-label="Tools">
+          <nav aria-label="Tools" ref={nav}>
             <ul className="tabs">
               {TOOLS.map((t) => (
                 <li key={t.path}>

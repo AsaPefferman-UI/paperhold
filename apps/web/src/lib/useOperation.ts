@@ -1,4 +1,11 @@
-import { PdfToolsError, toOpError, type OpArgs, type OpError, type OpName } from '@pdf-tools/core';
+import {
+  PdfToolsError,
+  toOpError,
+  type OpArgs,
+  type OpError,
+  type OpName,
+  type OpOutput,
+} from '@pdf-tools/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { pool } from '../worker/pool.ts';
 import { revokeAll, toDownloads, type DownloadableFile } from './download.ts';
@@ -15,7 +22,7 @@ export interface Prepared<K extends OpName> {
 }
 
 /** Drives one op on the worker pool: progress, cancel, result URLs, typed errors. */
-export function useOperation<K extends OpName>(op: K) {
+export function useOperation<K extends OpName>(op?: K) {
   const [state, setState] = useState<OperationState>({ status: 'idle' });
   const controller = useRef<AbortController | null>(null);
   const results = useRef<DownloadableFile[]>([]);
@@ -25,21 +32,19 @@ export function useOperation<K extends OpName>(op: K) {
     results.current = [];
   };
 
-  const run = useCallback(
-    async (prepare: () => Promise<Prepared<K>>) => {
+  /** Shared lifecycle: progress, cancel, result URLs, typed errors. */
+  const execute = useCallback(
+    async (task: (signal: AbortSignal, onProgress: (f: number) => void) => Promise<OpOutput>) => {
       controller.current?.abort();
       clearResults();
       const ctl = new AbortController();
       controller.current = ctl;
       setState({ status: 'running', progress: null });
       try {
-        const { args, transfer } = await prepare();
-        if (ctl.signal.aborted) throw new PdfToolsError('cancelled');
-        const output = await pool().run(op, args, {
-          transfer,
-          signal: ctl.signal,
-          onProgress: (progress) => setState({ status: 'running', progress }),
+        const output = await task(ctl.signal, (progress) => {
+          if (!ctl.signal.aborted) setState({ status: 'running', progress });
         });
+        if (ctl.signal.aborted) throw new PdfToolsError('cancelled');
         results.current = toDownloads(output.files);
         setState({ status: 'done', files: results.current });
       } catch (err) {
@@ -49,7 +54,19 @@ export function useOperation<K extends OpName>(op: K) {
         if (controller.current === ctl) controller.current = null;
       }
     },
-    [op],
+    [],
+  );
+
+  /** Run the op in the worker pool. */
+  const run = useCallback(
+    (prepare: () => Promise<Prepared<K>>) =>
+      execute(async (signal, onProgress) => {
+        if (!op) throw new PdfToolsError('internal');
+        const { args, transfer } = await prepare();
+        if (signal.aborted) throw new PdfToolsError('cancelled');
+        return pool().run(op, args, { transfer, signal, onProgress });
+      }),
+    [execute, op],
   );
 
   const cancel = useCallback(() => controller.current?.abort(), []);
@@ -67,5 +84,8 @@ export function useOperation<K extends OpName>(op: K) {
     [],
   );
 
-  return { state, run, cancel, reset };
+  /** Run work that must stay on the page (e.g. canvas rendering) with the same lifecycle. */
+  const runLocal = execute;
+
+  return { state, run, runLocal, cancel, reset };
 }

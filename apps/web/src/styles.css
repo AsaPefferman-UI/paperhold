@@ -671,6 +671,33 @@ a:hover {
   font-size: 0.875rem;
 }
 
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  align-self: end;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.check input {
+  width: 1.125rem;
+  height: 1.125rem;
+  accent-color: var(--primary);
+}
+
+.check:has(input:disabled) {
+  color: var(--ink-soft);
+}
+
+.saving {
+  margin: 0 0 var(--space-4);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ok);
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -804,18 +831,25 @@ a:hover {
   font-size: 1.125rem;
 }
 
+/* One row of folder tabs beside the wordmark; it scrolls sideways when tools outgrow it. */
+.band-inner nav {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.tabs {
+  flex-wrap: nowrap;
+}
+
+.tab-link {
+  white-space: nowrap;
+}
+
 @media (max-width: 40rem) {
-  /* One scrollable row of folder tabs instead of a wrapped stack. */
   .band-inner nav {
-    width: 100%;
-    overflow-x: auto;
-    scrollbar-width: thin;
-  }
-  .tabs {
-    flex-wrap: nowrap;
-  }
-  .tab-link {
-    white-space: nowrap;
+    flex-basis: 100%;
   }
 }
 

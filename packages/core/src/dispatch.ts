@@ -1,4 +1,6 @@
 import { PdfToolsError } from './errors.ts';
+import { compress } from './ops/compress.ts';
+import { imagesToPdf } from './ops/images-to-pdf.ts';
 import { merge } from './ops/merge.ts';
 import { organize } from './ops/organize.ts';
 import { split } from './ops/split.ts';
@@ -13,6 +15,8 @@ const registry: Registry = {
   organize,
   pageNumbers,
   watermark,
+  imagesToPdf,
+  compress,
 };
 
 export function isOpName(op: unknown): op is OpName {

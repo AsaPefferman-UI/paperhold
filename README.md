@@ -23,7 +23,7 @@ anyone, including us.
 | ----------------------------------------------------------- | ------------ |
 | Merge PDFs                                                  | Available    |
 | Split, organize (reorder/rotate/delete), page numbers, watermark | Available |
-| Images to PDF, PDF to images, compress                      | Planned (M3) |
+| Images to PDF (incl. HEIC), PDF to images, compress | Available |
 | Fill forms, visual signature, password protect/unlock       | Planned (M4) |
 | OCR (make scans searchable)                                 | Planned (M5) |
 

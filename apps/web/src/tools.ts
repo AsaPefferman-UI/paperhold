@@ -39,6 +39,24 @@ export const TOOLS: readonly ToolMeta[] = [
     description: 'Stamp text such as DRAFT or CONFIDENTIAL across your pages.',
     accept: 'application/pdf,.pdf',
   },
+  {
+    path: '/compress',
+    name: 'Compress PDF',
+    description: 'Make a PDF smaller by re-encoding its images, with three quality levels.',
+    accept: 'application/pdf,.pdf',
+  },
+  {
+    path: '/images-to-pdf',
+    name: 'Images to PDF',
+    description: 'Turn JPG, PNG, HEIC (iPhone) and other images into one PDF.',
+    accept: 'image/*,.heic,.heif,.avif',
+  },
+  {
+    path: '/pdf-to-images',
+    name: 'PDF to images',
+    description: 'Save each page of a PDF as a PNG or JPG image.',
+    accept: 'application/pdf,.pdf',
+  },
 ];
 
 export const SITE_NAME = 'pdf-tools';

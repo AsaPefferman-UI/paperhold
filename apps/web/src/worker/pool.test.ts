@@ -1,8 +1,8 @@
-import type { WorkerRequest, WorkerResponse } from '@pdf-tools/core';
+import type { RunRequest, WorkerRequest, WorkerResponse } from '@pdf-tools/core';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { WorkerPool, defaultPoolSize, type WorkerLike } from './pool.ts';
 
-type Behaviour = (req: WorkerRequest, reply: (msg: WorkerResponse) => void) => void;
+type Behaviour = (req: RunRequest, reply: (msg: WorkerResponse) => void) => void;
 
 class FakeWorker implements WorkerLike {
   static all: FakeWorker[] = [];
@@ -11,7 +11,10 @@ class FakeWorker implements WorkerLike {
   constructor(private behaviour: Behaviour) {
     FakeWorker.all.push(this);
   }
+  posted: WorkerRequest[] = [];
   postMessage(req: WorkerRequest): void {
+    this.posted.push(req);
+    if (req.type !== 'run') return;
     queueMicrotask(() =>
       this.behaviour(req, (msg) => {
         if (!this.terminated) this.emit('message', { data: msg });
@@ -128,5 +131,58 @@ describe('WorkerPool', () => {
     pool.destroy();
     await expect(a).rejects.toMatchObject({ code: 'cancelled' });
     await expect(b).rejects.toMatchObject({ code: 'cancelled' });
+  });
+});
+
+describe('canvas fallback', () => {
+  it('runs canvas calls on the page and replies to the worker', async () => {
+    const asked: string[] = [];
+    let worker: FakeWorker | undefined;
+    const pool = new WorkerPool(
+      () =>
+        (worker = new FakeWorker((req, reply) => {
+          reply({
+            type: 'canvas',
+            id: req.id,
+            callId: 7,
+            call: { method: 'decodeToPng', bytes: new Uint8Array([1]), mime: 'image/gif' },
+          });
+          setTimeout(() => reply({ type: 'done', id: req.id, output: { files: [] } }), 5);
+        })),
+      1,
+      async (call) => {
+        asked.push(call.method);
+        return new Uint8Array([9]);
+      },
+    );
+    await pool.run('merge', args);
+    expect(asked).toEqual(['decodeToPng']);
+    expect(worker!.posted.at(-1)).toMatchObject({
+      type: 'canvasResult',
+      callId: 7,
+      bytes: new Uint8Array([9]),
+    });
+  });
+
+  it('replies with a typed error when the page has no canvas handler', async () => {
+    let worker: FakeWorker | undefined;
+    const pool = new WorkerPool(
+      () =>
+        (worker = new FakeWorker((req, reply) => {
+          reply({
+            type: 'canvas',
+            id: req.id,
+            callId: 1,
+            call: { method: 'decodeToPng', bytes: new Uint8Array(), mime: '' },
+          });
+          setTimeout(() => reply({ type: 'done', id: req.id, output: { files: [] } }), 5);
+        })),
+      1,
+    );
+    await pool.run('merge', args);
+    expect(worker!.posted.at(-1)).toMatchObject({
+      type: 'canvasResult',
+      error: { code: 'unsupported' },
+    });
   });
 });

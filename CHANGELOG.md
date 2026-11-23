@@ -15,3 +15,7 @@ All notable changes to this project are documented here. The format is based on
 - M2 page tools: Split (extract, per range, every N pages; zip for many files), Organize
   pages (thumbnail grid: reorder, rotate, delete), Page numbers, Watermark.
 - Self-hosted pdf.js data files (fonts, CMaps, image decoders) under a versioned path.
+- M3 convert tools: Images to PDF (JPG, PNG, HEIC/AVIF via libheif WASM, WebP/GIF/BMP via the
+  browser; EXIF rotation honoured), PDF to images (PNG/JPG, zip), Compress (three presets:
+  image re-encoding plus qpdf object streams).
+- Canvas fallback for browsers without OffscreenCanvas in workers.

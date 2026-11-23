@@ -1,9 +1,12 @@
 import {
   DEFAULT_LIMITS,
   PdfToolsError,
+  toOpError,
+  type CanvasCall,
   type OpArgs,
   type OpName,
   type OpOutput,
+  type RunRequest,
   type WorkerRequest,
   type WorkerResponse,
 } from '@pdf-tools/core';
@@ -25,7 +28,7 @@ export interface RunOptions {
 }
 
 interface Job {
-  request: WorkerRequest;
+  request: RunRequest;
   opts: RunOptions;
   resolve: (out: OpOutput) => void;
   reject: (err: PdfToolsError) => void;
@@ -54,12 +57,14 @@ export class WorkerPool {
   constructor(
     private readonly create: () => WorkerLike,
     private readonly size = defaultPoolSize(),
+    /** Runs canvas work for workers that lack OffscreenCanvas. */
+    private readonly canvasOnPage?: (call: CanvasCall) => Promise<Uint8Array>,
   ) {}
 
   run<K extends OpName>(op: K, args: OpArgs[K], opts: RunOptions = {}): Promise<OpOutput> {
     return new Promise((resolve, reject) => {
       if (opts.signal?.aborted) return reject(new PdfToolsError('cancelled'));
-      const request = { type: 'run', id: this.nextId++, op, args } as WorkerRequest;
+      const request = { type: 'run', id: this.nextId++, op, args } as RunRequest;
       this.queue.push({ request, opts, resolve, reject });
       this.pump();
     });
@@ -123,7 +128,23 @@ export class WorkerPool {
   private onMessage(slot: Slot, msg: WorkerResponse): void {
     const job = slot.job;
     if (!job || msg.id !== job.request.id) return;
-    if (msg.type === 'progress') job.opts.onProgress?.(msg.fraction);
+    if (msg.type === 'canvas') {
+      const reply = (r: { bytes?: Uint8Array; error?: ReturnType<typeof toOpError> }) =>
+        slot.job === job &&
+        slot.worker.postMessage(
+          { type: 'canvasResult', callId: msg.callId, ...r },
+          r.bytes ? [r.bytes.buffer] : [],
+        );
+      if (!this.canvasOnPage)
+        reply({
+          error: { code: 'unsupported', message: 'This browser cannot process images here.' },
+        });
+      else
+        this.canvasOnPage(msg.call).then(
+          (bytes) => reply({ bytes }),
+          (err: unknown) => reply({ error: toOpError(err) }),
+        );
+    } else if (msg.type === 'progress') job.opts.onProgress?.(msg.fraction);
     else if (msg.type === 'done') this.finish(slot, msg.output, false);
     else this.finish(slot, new PdfToolsError(msg.error.code, msg.error.message), false);
   }
@@ -148,6 +169,11 @@ let shared: WorkerPool | undefined;
 export function pool(): WorkerPool {
   shared ??= new WorkerPool(
     () => new Worker(new URL('./ops.worker.ts', import.meta.url), { type: 'module' }) as WorkerLike,
+    defaultPoolSize(),
+    async (call) => {
+      const { domEnv, runCanvasCall } = await import('../lib/canvas-codec.ts');
+      return runCanvasCall(domEnv, call);
+    },
   );
   return shared;
 }

@@ -44,3 +44,6 @@ export function moveItem<T>(items: readonly T[], from: number, to: number): T[] 
   next.splice(to, 0, item as T);
   return next;
 }
+
+export const isImage = (f: File) =>
+  f.type.startsWith('image/') || /\.(jpe?g|png|gif|bmp|webp|heic|heif|avif)$/i.test(f.name);

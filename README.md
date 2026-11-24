@@ -24,7 +24,7 @@ anyone, including us.
 | Merge PDFs                                                  | Available    |
 | Split, organize (reorder/rotate/delete), page numbers, watermark | Available |
 | Images to PDF (incl. HEIC), PDF to images, compress | Available |
-| Fill forms, visual signature, password protect/unlock       | Planned (M4) |
+| Fill forms, visual signature, password protect/unlock | Available |
 | OCR (make scans searchable)                                 | Planned (M5) |
 
 See [docs/STATUS.md](docs/STATUS.md) for exactly what is done and verified.

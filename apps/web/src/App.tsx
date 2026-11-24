@@ -14,6 +14,10 @@ const Watermark = lazy(() => import('./tools/Watermark.tsx'));
 const Compress = lazy(() => import('./tools/Compress.tsx'));
 const ImagesToPdf = lazy(() => import('./tools/ImagesToPdf.tsx'));
 const PdfToImages = lazy(() => import('./tools/PdfToImages.tsx'));
+const FillForm = lazy(() => import('./tools/FillForm.tsx'));
+const Sign = lazy(() => import('./tools/Sign.tsx'));
+const Protect = lazy(() => import('./tools/Protect.tsx'));
+const Unlock = lazy(() => import('./tools/Unlock.tsx'));
 
 const ROUTES: Record<string, (tool: ToolMeta) => ReactNode> = {
   '/merge': (tool) => <Merge tool={tool} />,
@@ -24,6 +28,10 @@ const ROUTES: Record<string, (tool: ToolMeta) => ReactNode> = {
   '/compress': (tool) => <Compress tool={tool} />,
   '/images-to-pdf': (tool) => <ImagesToPdf tool={tool} />,
   '/pdf-to-images': (tool) => <PdfToImages tool={tool} />,
+  '/fill-form': (tool) => <FillForm tool={tool} />,
+  '/sign': (tool) => <Sign tool={tool} />,
+  '/protect': (tool) => <Protect tool={tool} />,
+  '/unlock': (tool) => <Unlock tool={tool} />,
 };
 
 export function App() {

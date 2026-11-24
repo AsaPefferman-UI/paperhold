@@ -11,3 +11,5 @@ export type { CompressPreset } from './ops/compress.ts';
 export type { PageSizeChoice } from './ops/images-to-pdf.ts';
 export { pdfToImages, MAX_PIXELS, type PageRenderer, type ImageType } from './ops/pdf-to-images.ts';
 export { sniffImage, type ImageFormat } from './images.ts';
+export type { FormField, FieldValue } from './ops/forms.ts';
+export type { SignaturePlacement } from './ops/sign.ts';

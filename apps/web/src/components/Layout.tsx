@@ -30,7 +30,7 @@ export function Layout({ path, children }: { path: string; children: ReactNode }
                     href={t.path}
                     aria-current={path === t.path ? 'page' : undefined}
                   >
-                    {t.name}
+                    {t.tab}
                   </Link>
                 </li>
               ))}

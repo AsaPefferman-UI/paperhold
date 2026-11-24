@@ -208,6 +208,13 @@ files['large-page-count.pdf'] = await save(await textDoc(1000, 'Page'));
   const color = form.createDropdown('color');
   color.addOptions(['Red', 'Green', 'Blue']);
   color.addToPage(page, { x: 72, y: 510, width: 160, height: 24 });
+  const size = form.createRadioGroup('size');
+  for (const [i, opt] of ['S', 'M', 'L'].entries()) {
+    size.addOptionToPage(opt, page, { x: 72 + i * 40, y: 460, width: 18, height: 18 });
+  }
+  const notes = form.createTextField('notes');
+  notes.enableMultiline();
+  notes.addToPage(page, { x: 72, y: 340, width: 300, height: 90 });
   files['acroform.pdf'] = await save(doc);
 }
 {

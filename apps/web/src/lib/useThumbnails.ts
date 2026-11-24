@@ -15,7 +15,7 @@ const EMPTY: Thumbnails = { pageCount: null, urls: [], error: null };
  * Open a PDF and render its thumbnails: the first 20 straight away, the rest progressively
  * (yielding between pages so the UI stays responsive). Cleans up URLs and the document.
  */
-export function useThumbnails(file: File | null): Thumbnails {
+export function useThumbnails(file: File | null, width = THUMB_WIDTH): Thumbnails {
   // State is tagged with the file it belongs to, so a new file never shows stale pages.
   const [state, setStateFor] = useState<Thumbnails & { file: File | null }>({
     ...EMPTY,
@@ -41,7 +41,7 @@ export function useThumbnails(file: File | null): Thumbnails {
       setState({ pageCount: doc.numPages, urls: [], error: null });
       for (let n = 1; n <= doc.numPages && !cancelled; n++) {
         try {
-          urls[n - 1] = (await renderThumbnail(doc, n, THUMB_WIDTH)).url;
+          urls[n - 1] = (await renderThumbnail(doc, n, width)).url;
         } catch {
           urls[n - 1] = undefined; // a page that fails to render keeps its placeholder
         }
@@ -59,7 +59,7 @@ export function useThumbnails(file: File | null): Thumbnails {
       destroy?.();
       for (const u of urls) if (u) URL.revokeObjectURL(u);
     };
-  }, [file]);
+  }, [file, width]);
 
   return file && state.file === file ? state : EMPTY;
 }

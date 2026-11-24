@@ -25,8 +25,7 @@ export function securityHeaders(analyticsOrigin = ''): Record<string, string> {
     'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Permissions-Policy':
-      'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
     'Cross-Origin-Opener-Policy': 'same-origin',
     'Cross-Origin-Resource-Policy': 'same-origin',
     'X-Frame-Options': 'DENY',

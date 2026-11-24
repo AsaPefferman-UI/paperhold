@@ -19,3 +19,6 @@ All notable changes to this project are documented here. The format is based on
   browser; EXIF rotation honoured), PDF to images (PNG/JPG, zip), Compress (three presets:
   image re-encoding plus qpdf object streams).
 - Canvas fallback for browsers without OffscreenCanvas in workers.
+- M4: Fill form (all AcroForm field types, optional flatten), Sign (visual signature: draw,
+  type or upload; drag or keyboard placement; opt-in saved signature with Forget), Protect and
+  Unlock (qpdf, AES-256 only).

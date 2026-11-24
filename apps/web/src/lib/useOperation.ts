@@ -13,7 +13,7 @@ import { revokeAll, toDownloads, type DownloadableFile } from './download.ts';
 export type OperationState =
   | { status: 'idle' }
   | { status: 'running'; progress: number | null }
-  | { status: 'done'; files: DownloadableFile[] }
+  | { status: 'done'; files: DownloadableFile[]; data?: unknown }
   | { status: 'error'; error: OpError };
 
 export interface Prepared<K extends OpName> {
@@ -46,7 +46,7 @@ export function useOperation<K extends OpName>(op?: K) {
         });
         if (ctl.signal.aborted) throw new PdfToolsError('cancelled');
         results.current = toDownloads(output.files);
-        setState({ status: 'done', files: results.current });
+        setState({ status: 'done', files: results.current, data: output.data });
       } catch (err) {
         const error = toOpError(err);
         setState(error.code === 'cancelled' ? { status: 'idle' } : { status: 'error', error });

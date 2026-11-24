@@ -5,6 +5,9 @@ import type { SplitArgs } from './ops/split.ts';
 import type { PageNumbersArgs, WatermarkArgs } from './ops/stamp-ops.ts';
 import type { CompressArgs } from './ops/compress.ts';
 import type { ImagesToPdfArgs } from './ops/images-to-pdf.ts';
+import type { FillFormArgs, InspectFormArgs } from './ops/forms.ts';
+import type { ProtectArgs, UnlockArgs } from './ops/encryption.ts';
+import type { SignArgs } from './ops/sign.ts';
 import type { QpdfFactory } from './qpdf.ts';
 
 /** A file produced by an operation. */
@@ -16,6 +19,8 @@ export interface OutputFile {
 
 export interface OpOutput {
   files: OutputFile[];
+  /** Structured, JSON-safe results for ops that inspect rather than produce (e.g. form fields). */
+  data?: unknown;
 }
 
 /** Every operation's argument type, keyed by op name. Adding an op = one line here + one in registry. */
@@ -27,6 +32,11 @@ export interface OpArgs {
   watermark: WatermarkArgs;
   imagesToPdf: ImagesToPdfArgs;
   compress: CompressArgs;
+  inspectForm: InspectFormArgs;
+  fillForm: FillFormArgs;
+  sign: SignArgs;
+  protect: ProtectArgs;
+  unlock: UnlockArgs;
 }
 
 export type OpName = keyof OpArgs;

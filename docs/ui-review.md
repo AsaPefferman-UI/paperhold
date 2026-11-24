@@ -48,3 +48,15 @@ Detector: no findings. Screens checked at 1280 (light) and 375 (dark).
 | 3 | Theming | 4 | New `.check` and `.saving` styles use tokens only. |
 | 4 | Responsive | 3 -> 4 | With eight tools the tab strip wrapped onto a second row at 1280 px: tabs are now one row beside the wordmark that scrolls sideways, and the current tab is scrolled into view on phones. |
 | 5 | Implementation integrity | 4 | A disabled-but-checked margin box was misleading when the page size follows the image: the option now only appears for fixed page sizes. |
+
+## M4: Fill form, Sign, Protect, Unlock
+
+Detector: no findings. Screens checked at 1280 (light) and 375 (dark).
+
+| # | Dimension | Score | Key finding |
+| --- | --- | --- | --- |
+| 1 | Accessibility | 4 | Signature placement is a focusable slider (arrow keys move, +/- resize, value text announced); typed and uploaded signatures are keyboard alternatives to drawing; password mismatch is tied to its input with `aria-describedby`. axe clean. |
+| 2 | Performance | 4 | Signature PNG encoded synchronously (Chromium deferred `toBlob` on detached canvases by seconds). |
+| 3 | Theming | 4 | Segmented control, notice, placement area all tokenised. |
+| 4 | Responsive | 3 -> 4 | Twelve tools overflowed the tab strip: tabs now use short labels and tighter padding; it still scrolls if needed, with the current tab kept in view. |
+| 5 | Implementation integrity | 3 -> 4 | The signature caveat first rendered as a grid item and pushed the steps out of line: it is now a permanent note under the title via a `notice` slot on the tool page. |

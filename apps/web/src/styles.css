@@ -203,7 +203,7 @@ a:hover {
 
 .tab-link {
   display: block;
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-3);
   margin-bottom: -1px;
   border: 1px solid transparent;
   border-bottom: 0;
@@ -613,8 +613,9 @@ a:hover {
   grid-column: 1 / -1;
 }
 
-.field input:not([type='range']),
-.field select {
+.field input:not([type='range']):not([type='checkbox']):not([type='radio']),
+.field select,
+.field textarea {
   font: inherit;
   font-weight: 400;
   min-height: 2.75rem;
@@ -698,6 +699,161 @@ a:hover {
   color: var(--ok);
 }
 
+.field textarea {
+  resize: vertical;
+}
+
+.field select[multiple] {
+  min-height: 6rem;
+}
+
+.inline-field {
+  grid-auto-flow: column;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.radio-row {
+  border: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+}
+
+.radio-row legend,
+.legend {
+  padding: 0;
+  margin-bottom: var(--space-1);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.hint-error {
+  color: var(--danger);
+  margin-bottom: var(--space-3);
+}
+
+.notice {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+  margin: 0 0 var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  max-width: 60rem;
+  border: 1.5px solid var(--manila-edge);
+  border-radius: var(--radius);
+  background: var(--paper);
+  font-weight: 600;
+}
+
+/* Signature maker */
+.sigmaker {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.segmented {
+  display: flex;
+  border: 1px solid var(--manila-edge);
+  border-radius: var(--radius);
+  overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.segment {
+  position: relative;
+}
+
+.segment input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.segment span {
+  display: block;
+  padding: var(--space-2) var(--space-4);
+  min-height: 2.75rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.segment input:checked + span {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.segment input:focus-visible + span {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+
+.sig-canvas {
+  width: 100%;
+  aspect-ratio: 3;
+  border: 1px dashed var(--manila-edge);
+  border-radius: var(--radius);
+  background: var(--pdf-page);
+  touch-action: none;
+}
+
+.sig-canvas[data-mode='draw'] {
+  cursor: crosshair;
+}
+
+.sigmaker > .button-quiet,
+.saved-sig .button-quiet {
+  justify-self: start;
+}
+
+.saved-sig {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+/* Placing the signature on a page */
+.place-area {
+  position: relative;
+  max-width: 30rem;
+  margin: 0 auto;
+  box-shadow: var(--shadow);
+  background: var(--pdf-page);
+}
+
+.place-page {
+  display: block;
+  width: 100%;
+  user-select: none;
+}
+
+.place-sig {
+  position: absolute;
+  outline: 2px dashed var(--primary);
+  outline-offset: 2px;
+  cursor: move;
+  touch-action: none;
+}
+
+.place-sig:focus-visible {
+  outline: 3px solid var(--focus);
+}
+
+.place-sig img {
+  display: block;
+  width: 100%;
+  pointer-events: none;
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -712,6 +868,18 @@ a:hover {
 
 .page-count {
   margin-top: var(--space-3);
+}
+
+.sheet > .check {
+  margin-bottom: var(--space-3);
+}
+
+.form-fields {
+  margin-top: var(--space-4);
+}
+
+.tool-head .notice {
+  margin-top: var(--space-4);
 }
 
 .single-file {
@@ -874,4 +1042,13 @@ a:hover {
   .sheet-row {
     transition: opacity 160ms var(--ease-out);
   }
+}
+
+.hint + .choices,
+.choices + .hint {
+  margin-top: var(--space-3);
+}
+
+.choices + .hint {
+  margin-bottom: var(--space-4);
 }

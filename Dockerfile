@@ -11,7 +11,10 @@ ARG SITE_URL=""
 ARG SITE_CF_ANALYTICS_TOKEN=""
 RUN pnpm build && node apps/web/build/nginx-conf.ts > /tmp/default.conf
 
-FROM nginxinc/nginx-unprivileged:stable-alpine
+# mainline: nginx's recommended branch, and the one that gets security releases first
+# (stable-alpine lagged behind fixed CVEs that apk upgrade can't patch, since nginx comes
+# from nginx.org's own package repo).
+FROM nginxinc/nginx-unprivileged:mainline-alpine
 # Pick up Alpine security fixes released after the base image was built (Trivy gate).
 USER root
 RUN apk upgrade --no-cache

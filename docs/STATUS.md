@@ -58,6 +58,12 @@ owner setup ([LAUNCH.md](LAUNCH.md)) and the checks below that only CI or a huma
   reports were not written (permission refusal in the sub-agent); the structured records are in
   `~/security-audit-skill/pdf-tools/run-1/`.
 - HEIC (HEVC) has no automated test with a real photo (no licence-clean sample).
+- Firefox on CI (first GitHub runs, Nov 2026): the page process crashes inside the axe scan once a
+  file has been processed (merge result, organize thumbnails), even with small files. Those two
+  axe states are skipped in Firefox and still run in Chromium and WebKit; the tools' functional
+  tests pass in Firefox. Cause not identified (suspect blob: URLs during Playwright's
+  frame.evaluate). The offline test is also skipped in Firefox because Playwright's offline
+  emulation fails navigations before the service worker answers.
 - OCR and watermark/page numbers/forms: Latin-script text only. Pages that already contain text
   are OCR'd again.
 - Performance targets in SPEC §7 (50 MB scan compress < 20 s, 3 s/page OCR on real scans) are

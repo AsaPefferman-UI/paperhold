@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import './SignatureMaker.css';
 
 type Mode = 'draw' | 'type' | 'upload';
 
@@ -159,7 +160,7 @@ export function SignatureMaker({ onChange }: Props) {
   };
 
   return (
-    <div className="sigmaker">
+    <div className="sigmaker stack">
       <div className="segmented" role="radiogroup" aria-label="How to make your signature">
         {(['draw', 'type', 'upload'] as const).map((m) => (
           <label key={m} className="segment">

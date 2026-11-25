@@ -1,6 +1,7 @@
 import { useState, type DragEvent } from 'react';
 import { moveItem } from '../lib/files.ts';
 import { Icon } from './Icon.tsx';
+import './PageGrid.css';
 
 export interface PageItem {
   /** Stable identity for React and drag state. */

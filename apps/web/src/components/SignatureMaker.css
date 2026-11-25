@@ -1,0 +1,65 @@
+/* Signature maker: draw, type or upload a signature. Loads with the Sign tool only. */
+@layer components {
+  /* Layout comes from .stack. */
+  .sigmaker {
+    --gap: var(--space-3);
+    margin-bottom: var(--space-4);
+
+    & > .button-quiet {
+      justify-self: start;
+    }
+  }
+
+  .segmented {
+    display: flex;
+    border: 1px solid var(--manila-edge);
+    border-radius: var(--radius);
+    overflow: hidden;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .segment {
+    position: relative;
+
+    & input {
+      position: absolute;
+      opacity: 0;
+      inset: 0;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    & span {
+      display: block;
+      padding: var(--space-2) var(--space-4);
+      min-height: 2.75rem;
+      line-height: 1.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    & input:checked + span {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    & input:focus-visible + span {
+      outline: 3px solid var(--focus);
+      outline-offset: -3px;
+    }
+  }
+
+  .sig-canvas {
+    width: 100%;
+    aspect-ratio: 3;
+    border: 1px dashed var(--manila-edge);
+    border-radius: var(--radius);
+    background: var(--pdf-page);
+    touch-action: none;
+
+    &[data-mode='draw'] {
+      cursor: crosshair;
+    }
+  }
+}

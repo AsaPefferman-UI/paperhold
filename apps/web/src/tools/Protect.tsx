@@ -5,6 +5,7 @@ import { ToolPage } from '../components/ToolPage.tsx';
 import { isPdf, type PickedFile } from '../lib/files.ts';
 import { useOperation } from '../lib/useOperation.ts';
 import type { ToolMeta } from '../tools.ts';
+import './Protect.css';
 
 export default function Protect({ tool }: { tool: ToolMeta }) {
   const [file, setFile] = useState<PickedFile | null>(null);
@@ -90,7 +91,7 @@ export default function Protect({ tool }: { tool: ToolMeta }) {
             Short passwords are easy to guess. Use at least 8 characters, ideally a few words.
           </p>
         )}
-        <fieldset className="choices">
+        <fieldset className="choices stack">
           <legend className="legend">After opening, people may</legend>
           <label className="check">
             <input

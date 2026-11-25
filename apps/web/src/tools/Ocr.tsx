@@ -7,6 +7,7 @@ import { isPdf, type PickedFile } from '../lib/files.ts';
 import { downloadSize, makeSearchable, type OcrProgress } from '../lib/ocr.ts';
 import { useOperation } from '../lib/useOperation.ts';
 import type { ToolMeta } from '../tools.ts';
+import './Ocr.css';
 
 const isPhone = () => globalThis.matchMedia?.('(pointer: coarse)').matches ?? false;
 
@@ -64,7 +65,7 @@ export default function Ocr({ tool }: { tool: ToolMeta }) {
       </section>
       <section className="sheet" aria-labelledby="step-lang">
         <h2 id="step-lang">2. Language of the text</h2>
-        <fieldset className="choices lang-choices" disabled={state.status === 'running'}>
+        <fieldset className="choices lang-choices stack" disabled={state.status === 'running'}>
           <legend className="visually-hidden">Languages</legend>
           {(Object.keys(OCR_LANGUAGES) as OcrLanguage[]).map((code) => (
             <label key={code} className="check">

@@ -1,0 +1,335 @@
+/*
+ * Components used across many tools or by always-loaded pages (home, privacy, 404). Styles that
+ * belong to one component live in a .css file beside it and load with that component's chunk.
+ */
+@layer components {
+  .lede {
+    font-size: 1.125rem;
+    color: var(--ink-soft);
+    max-width: 60ch;
+  }
+
+  .loading {
+    color: var(--ink-soft);
+  }
+
+  /* A sheet of paper on the folder: every tool step is one. */
+  .sheet {
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: var(--space-5);
+    margin-bottom: var(--space-5);
+
+    & > :last-child {
+      margin-bottom: 0;
+    }
+
+    /* After :last-child on purpose: a trailing checkbox keeps its spacing. */
+    & > .check {
+      margin-bottom: var(--space-3);
+    }
+
+    @media (max-width: 30rem) {
+      padding: var(--space-4);
+    }
+  }
+
+  /* Index tab: numbered, coloured file and page markers. */
+  .tab {
+    grid-area: tab;
+    display: grid;
+    place-items: center;
+    min-width: 2.25rem;
+    height: 1.75rem;
+    margin-left: -1px;
+    padding: 0 var(--space-2);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: var(--tab-0);
+    color: var(--on-tab);
+    font-weight: 700;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+
+    &[data-tone='1'] {
+      background: var(--tab-1);
+    }
+    &[data-tone='2'] {
+      background: var(--tab-2);
+    }
+    &[data-tone='3'] {
+      background: var(--tab-3);
+    }
+  }
+
+  /* Buttons */
+  .button,
+  .icon-button {
+    font: inherit;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition:
+      background-color 140ms var(--ease-out),
+      color 140ms var(--ease-out),
+      border-color 140ms var(--ease-out);
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-5);
+    border: 1px solid transparent;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .button-primary {
+    background: var(--primary);
+    color: var(--on-primary);
+
+    &:hover {
+      background: var(--primary-hover);
+      color: var(--on-primary);
+    }
+
+    &:active {
+      transform: translateY(1px);
+
+      @media (prefers-reduced-motion: reduce) {
+        transform: none;
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      background: color-mix(in srgb, var(--ink-soft) 30%, var(--paper));
+      color: var(--ink-soft);
+      transform: none;
+    }
+  }
+
+  .button-quiet {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--paper-edge);
+
+    &:hover {
+      background: var(--manila-ground);
+    }
+  }
+
+  .button-wide {
+    width: 100%;
+  }
+
+  .icon-button {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--ink-soft);
+
+    &:hover {
+      background: var(--manila-ground);
+      color: var(--ink);
+    }
+
+    &[aria-disabled='true'] {
+      opacity: 0.35;
+      cursor: default;
+
+      &:hover {
+        background: transparent;
+      }
+    }
+  }
+
+  .icon {
+    flex: none;
+  }
+
+  /* Status stamps: done and error messages. */
+  .stamp {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    border: 1.5px solid currentColor;
+    border-radius: var(--radius);
+    font-weight: 600;
+  }
+
+  .stamp-done {
+    color: var(--ok);
+    background: var(--ok-tint);
+  }
+
+  .stamp-error {
+    color: var(--danger);
+    background: var(--danger-tint);
+  }
+
+  .hint {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+  }
+
+  .refused {
+    margin: var(--space-3) 0 0;
+    padding: var(--space-3) var(--space-4) var(--space-3) var(--space-6);
+    color: var(--danger);
+    background: var(--danger-tint);
+    border-radius: var(--radius);
+  }
+
+  /* Forms */
+  .fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+  }
+
+  .field {
+    display: grid;
+    gap: var(--space-1);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    margin-bottom: var(--space-4);
+
+    .fields & {
+      margin-bottom: 0;
+    }
+
+    & input:not([type='range']):not([type='checkbox']):not([type='radio']),
+    & select,
+    & textarea {
+      font: inherit;
+      font-weight: 400;
+      min-height: 2.75rem;
+      padding: var(--space-2) var(--space-3);
+      color: var(--ink);
+      background: var(--paper);
+      border: 1px solid var(--manila-edge);
+      border-radius: var(--radius);
+    }
+
+    & input[type='range'] {
+      accent-color: var(--primary);
+      min-height: 2.75rem;
+    }
+
+    & textarea {
+      resize: vertical;
+    }
+
+    & select[multiple] {
+      min-height: 6rem;
+    }
+  }
+
+  .field-wide {
+    grid-column: 1 / -1;
+  }
+
+  /* Radio cards. Layout comes from .stack on the fieldset. */
+  .choices {
+    border: 0;
+    margin: 0 0 var(--space-4);
+    padding: 0;
+
+    .hint + & {
+      margin-top: var(--space-3);
+    }
+
+    & + .hint {
+      margin-top: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+  }
+
+  .choice {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-3);
+    border: 1px solid var(--paper-edge);
+    border-radius: var(--radius);
+    cursor: pointer;
+
+    &:has(input:checked) {
+      border-color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 6%, var(--paper));
+    }
+
+    & input {
+      margin-top: 0.25rem;
+      accent-color: var(--primary);
+      width: 1.125rem;
+      height: 1.125rem;
+    }
+  }
+
+  .choice-label {
+    display: block;
+    font-weight: 600;
+  }
+
+  .choice-hint {
+    display: block;
+    color: var(--ink-soft);
+    font-size: 0.875rem;
+  }
+
+  .check {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    align-self: end;
+    font-weight: 600;
+    font-size: 0.9375rem;
+
+    & input {
+      width: 1.125rem;
+      height: 1.125rem;
+      accent-color: var(--primary);
+    }
+
+    &:has(input:disabled) {
+      color: var(--ink-soft);
+    }
+  }
+
+  .saving {
+    margin: 0 0 var(--space-4);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--ok);
+  }
+
+  /* A row of controls above a preview. Layout comes from .cluster. */
+  .toolbar {
+    --gap: var(--space-2) var(--space-3);
+    margin: var(--space-4) 0 var(--space-3);
+
+    & .hint {
+      margin-right: auto;
+    }
+  }
+
+  .page-placeholder {
+    width: 70%;
+    aspect-ratio: 0.77;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--paper-edge) 50%, var(--paper));
+  }
+}

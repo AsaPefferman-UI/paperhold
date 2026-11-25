@@ -8,6 +8,7 @@ import { isPdf, type PickedFile } from '../lib/files.ts';
 import { useOperation } from '../lib/useOperation.ts';
 import { useThumbnails } from '../lib/useThumbnails.ts';
 import type { ToolMeta } from '../tools.ts';
+import './Split.css';
 
 type Kind = SplitMode['kind'];
 
@@ -72,7 +73,7 @@ export default function Split({ tool }: { tool: ToolMeta }) {
       </section>
       <section className="sheet" aria-labelledby="step-options">
         <h2 id="step-options">2. How to split</h2>
-        <fieldset className="choices">
+        <fieldset className="choices stack">
           <legend className="visually-hidden">Split mode</legend>
           {KINDS.map((k) => (
             <label key={k.kind} className="choice">

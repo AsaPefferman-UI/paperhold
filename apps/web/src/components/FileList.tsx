@@ -2,6 +2,7 @@ import { formatBytes } from '@pdf-tools/core';
 import { useState, type DragEvent } from 'react';
 import { moveItem, type PickedFile } from '../lib/files.ts';
 import { Icon } from './Icon.tsx';
+import './FileList.css';
 
 interface Props {
   files: PickedFile[];
@@ -34,7 +35,7 @@ export function FileList({ files, label, onChange }: Props) {
 
   return (
     <>
-      <ol className="sheets" aria-label={label}>
+      <ol className="sheets stack" aria-label={label}>
         {files.map((f, i) => (
           <li
             key={f.id}

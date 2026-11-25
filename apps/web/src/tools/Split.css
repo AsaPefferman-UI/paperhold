@@ -1,0 +1,6 @@
+/* Split tool. */
+@layer components {
+  .page-count {
+    margin-top: var(--space-3);
+  }
+}

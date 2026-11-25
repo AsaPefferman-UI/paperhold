@@ -1,0 +1,19 @@
+/*
+ * Layout helpers for the two most repeated patterns. They sit in the last layer, so they win over
+ * component rules: set spacing with --gap on the component, never with `gap` (it would lose).
+ *   .stack    vertical flow (grid) with a gap
+ *   .cluster  a wrapping row, items centred on the cross axis
+ */
+@layer utilities {
+  .stack {
+    display: grid;
+    gap: var(--gap, var(--space-2));
+  }
+
+  .cluster {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap, var(--space-2));
+  }
+}

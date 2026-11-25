@@ -1,5 +1,6 @@
 import { useId, useState, type DragEvent } from 'react';
 import { Icon } from './Icon.tsx';
+import './FileDrop.css';
 
 interface Props {
   accept: string;

@@ -64,7 +64,7 @@ export default function Organize({ tool }: { tool: ToolMeta }) {
         )}
         {thumbs.pageCount !== null && (
           <>
-            <div className="toolbar">
+            <div className="toolbar cluster">
               <span className="hint">
                 {items.length} of {thumbs.pageCount} pages kept
               </span>

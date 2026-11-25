@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { pickFiles, type PickedFile } from '../lib/files.ts';
 import { FileDrop } from './FileDrop.tsx';
 import { Icon } from './Icon.tsx';
+import './FileList.css';
 
 interface Props {
   accept: string;

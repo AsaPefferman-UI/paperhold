@@ -1,0 +1,21 @@
+/* Fill form tool: the generated field list and radio groups. */
+@layer components {
+  .form-fields {
+    margin-top: var(--space-4);
+  }
+
+  .radio-row {
+    border: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+
+    & legend {
+      padding: 0;
+      margin-bottom: var(--space-1);
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+  }
+}

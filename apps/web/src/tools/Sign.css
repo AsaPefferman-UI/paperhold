@@ -1,0 +1,52 @@
+/* Sign tool: saved signature row, page picker field, placing the signature on the page. */
+@layer components {
+  /* Layout comes from .cluster. */
+  .saved-sig {
+    --gap: var(--space-3);
+    margin-bottom: var(--space-4);
+
+    & .button-quiet {
+      justify-self: start;
+    }
+  }
+
+  /* A label and its control on one line ("Page [3]"). */
+  .field.inline-field {
+    grid-auto-flow: column;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+  }
+
+  .place-area {
+    position: relative;
+    max-width: 30rem;
+    margin: 0 auto;
+    box-shadow: var(--shadow);
+    background: var(--pdf-page);
+  }
+
+  .place-page {
+    display: block;
+    width: 100%;
+    user-select: none;
+  }
+
+  .place-sig {
+    position: absolute;
+    outline: 2px dashed var(--primary);
+    outline-offset: 2px;
+    cursor: move;
+    touch-action: none;
+
+    &:focus-visible {
+      outline: 3px solid var(--focus);
+    }
+
+    & img {
+      display: block;
+      width: 100%;
+      pointer-events: none;
+    }
+  }
+}

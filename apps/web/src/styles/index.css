@@ -1,0 +1,15 @@
+/*
+ * Style entry point. The layer order is declared once, here, before any other CSS loads, so the
+ * cascade never depends on which file (or lazy-loaded tool chunk) arrives first:
+ *   tokens      design tokens (custom properties) only
+ *   base        reset, typography, links, focus, accessibility helpers
+ *   components  shared component styles here, plus each component's own .css file beside it
+ *   utilities   layout helpers (.stack, .cluster); they win over component rules
+ * Every CSS file wraps its rules in one of these layers. Unlayered CSS would beat all of them.
+ */
+@layer tokens, base, components, utilities;
+
+@import './tokens.css';
+@import './base.css';
+@import './components.css';
+@import './utilities.css';

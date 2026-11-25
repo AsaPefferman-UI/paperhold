@@ -1,0 +1,41 @@
+/* Drop target for picking files. */
+@layer components {
+  .drop {
+    position: relative;
+    border: 2px dashed var(--manila-edge);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--manila-ground) 55%, var(--paper));
+    transition:
+      background-color 160ms var(--ease-out),
+      border-color 160ms var(--ease-out);
+
+    &[data-over] {
+      border-color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 8%, var(--paper));
+    }
+
+    &:focus-within {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+  }
+
+  .drop-label {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-1);
+    padding: var(--space-6) var(--space-4);
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .drop-title {
+    font-weight: 700;
+    font-size: 1.0625rem;
+  }
+
+  .drop-hint {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+  }
+}

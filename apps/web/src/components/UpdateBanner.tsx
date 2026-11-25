@@ -1,5 +1,6 @@
 import { useBusy } from '../lib/busy.ts';
 import { applyUpdate, useUpdateAvailable } from '../lib/sw.ts';
+import './UpdateBanner.css';
 
 /** Shown when a new version is installed and waiting. Never interrupts work in progress. */
 export function UpdateBanner() {
@@ -7,7 +8,7 @@ export function UpdateBanner() {
   const busy = useBusy();
   if (!available) return null;
   return (
-    <div className="update-banner" role="status">
+    <div className="update-banner cluster" role="status">
       <p>A new version of this site is ready.</p>
       <button type="button" className="button button-primary" disabled={busy} onClick={applyUpdate}>
         Reload for update

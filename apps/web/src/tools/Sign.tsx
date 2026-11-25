@@ -8,6 +8,7 @@ import { forgetSignature, loadSignature, saveSignature } from '../lib/signatureS
 import { useOperation } from '../lib/useOperation.ts';
 import { useThumbnails } from '../lib/useThumbnails.ts';
 import type { ToolMeta } from '../tools.ts';
+import './Sign.css';
 
 interface Box {
   x: number;
@@ -133,7 +134,7 @@ export default function Sign({ tool }: { tool: ToolMeta }) {
         )}
         {pageCount > 0 && (
           <>
-            <div className="toolbar">
+            <div className="toolbar cluster">
               <label className="field inline-field">
                 <span>Page</span>
                 <select value={page} onChange={(e) => setPage(Number(e.target.value))}>
@@ -188,7 +189,7 @@ export default function Sign({ tool }: { tool: ToolMeta }) {
       <section className="sheet" aria-labelledby="step-sig">
         <h2 id="step-sig">2. Your signature</h2>
         {saved && (
-          <div className="saved-sig">
+          <div className="saved-sig cluster">
             <label className="check">
               <input
                 type="checkbox"

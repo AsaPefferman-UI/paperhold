@@ -1,6 +1,7 @@
 # Design system: tool UI
 
-Recorded from the built system (`apps/web/src/styles.css`). World: an open manila folder with
+Recorded from the built system (tokens in `apps/web/src/styles/tokens.css`; see
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#styles) for how the CSS is organised). World: an open manila folder with
 index-tab dividers. Mode: Operate. The landing and privacy pages (Persuade) are designed
 separately with their own brief.
 

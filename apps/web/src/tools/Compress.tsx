@@ -54,7 +54,7 @@ export default function Compress({ tool }: { tool: ToolMeta }) {
       </section>
       <section className="sheet" aria-labelledby="step-options">
         <h2 id="step-options">2. Compression level</h2>
-        <fieldset className="choices">
+        <fieldset className="choices stack">
           <legend className="visually-hidden">Compression level</legend>
           {PRESETS.map((p) => (
             <label key={p.value} className="choice">

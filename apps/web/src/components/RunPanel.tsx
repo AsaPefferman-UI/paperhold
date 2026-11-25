@@ -2,6 +2,7 @@ import { formatBytes } from '@pdf-tools/core';
 import type { ReactNode } from 'react';
 import type { OperationState } from '../lib/useOperation.ts';
 import { Icon } from './Icon.tsx';
+import './RunPanel.css';
 
 interface Props {
   state: OperationState;
@@ -18,7 +19,7 @@ export function RunPanel({ state, busyLabel, onCancel, onReset, children }: Prop
   if (state.status === 'running') {
     const pct = state.progress === null ? null : Math.round(state.progress * 100);
     return (
-      <div className="run" role="status">
+      <div className="run stack" role="status">
         <div className="run-line">
           <span>
             {busyLabel}
@@ -40,13 +41,13 @@ export function RunPanel({ state, busyLabel, onCancel, onReset, children }: Prop
   }
   if (state.status === 'done') {
     return (
-      <div className="run run-done" role="status">
+      <div className="run run-done stack" role="status">
         <p className="stamp stamp-done">
           <Icon name="check" /> Done on this device. Nothing was uploaded.
         </p>
-        <ul className="downloads">
+        <ul className="downloads stack">
           {state.files.map((f) => (
-            <li key={f.url}>
+            <li key={f.url} className="cluster">
               <a className="button button-primary" href={f.url} download={f.name}>
                 <Icon name="download" /> Download {f.name}
               </a>
@@ -61,7 +62,7 @@ export function RunPanel({ state, busyLabel, onCancel, onReset, children }: Prop
     );
   }
   return (
-    <div className="run">
+    <div className="run stack">
       {state.status === 'error' && (
         <p className="stamp stamp-error" role="alert">
           <Icon name="alert" /> {state.error.message}

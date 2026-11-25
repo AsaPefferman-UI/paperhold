@@ -3,6 +3,7 @@ import { SITE } from '../site.ts';
 import type { ToolMeta } from '../tools.ts';
 import { ErrorBoundary } from './ErrorBoundary.tsx';
 import { Icon } from './Icon.tsx';
+import './ToolPage.css';
 
 export function ToolPage({
   tool,

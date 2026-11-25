@@ -17,6 +17,13 @@ All notable changes to this project are documented here. The format is based on
   offline test skipped in Firefox (Playwright limitation); slower CI WebKit allowed more time for
   the 1000-page thumbnail test.
 
+- Styles split by job: `src/styles/` (tokens, base, shared components, layout utilities) plus a
+  CSS file beside each component that owns styles, ordered with cascade layers declared once in
+  `src/styles/index.css`. Native nesting for states and children; `.stack` and `.cluster` layout
+  helpers. Tool-only CSS now ships with its lazy tool chunk (home page CSS 18.6 KB to 12.9 KB).
+  Pixel-identical on every page in light and dark at desktop and phone widths, except the
+  primary hover colour, now derived with `color-mix(in oklab, ...)` (contrast 9.2 light, 10.0 dark).
+
 ### Documentation
 
 - New `docs/ARCHITECTURE.md` (maintainer guide: request flow, adding a tool, engine upgrades,

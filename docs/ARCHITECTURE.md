@@ -87,7 +87,8 @@ Touch these places, in order. CI catches most omissions, but not all.
    if `TOOLS` and `ROUTES` disagree.
 7. **Page**: `apps/web/src/tools/<Tool>.tsx`, built from `ToolPage`, `SingleFile`/`FileDrop`,
    `RunPanel` and `useOperation`. Follow an existing tool of the same shape (`Unlock.tsx` is the
-   smallest).
+   smallest). Styles only this tool uses go in `<Tool>.css` beside it,
+   wrapped in `@layer components` and imported by the tool (see Styles below).
 8. **E2E**: a spec in `apps/web/e2e/` covering the happy path and the main error path. The
    network guard applies automatically; the axe scan covers the new route automatically.
 9. **Images**: `pnpm build && pnpm preview`, then `pnpm images` to generate its OG image.
@@ -135,10 +136,37 @@ A signed `v*` tag on `main` runs the Release workflow: one build, published SHA2
 provenance, deploy of that exact artifact to Cloudflare Pages through protected environments.
 Details: [runbooks/deploy.md](runbooks/deploy.md).
 
-## Known maintenance hotspots
+## Styles
 
-- `apps/web/src/styles.css` (~1,000 lines) holds all app styles. Design tokens are at the top;
-  keep new values on tokens rather than literals (see [DESIGN.md](../DESIGN.md)).
+Plain CSS, organised by job and ordered with cascade layers. `src/styles/index.css` declares the
+order once, before anything else loads: `@layer tokens, base, components, utilities;`. Every
+CSS file wraps its rules in one of these layers, so the cascade never depends on which file or
+lazy-loaded tool chunk arrives first. Unlayered CSS would beat every layer: don't write any.
+
+| File | Layer | Holds |
+| --- | --- | --- |
+| `src/styles/tokens.css` | tokens | Colours, spacing, radius, fonts, motion. Light theme plus a dark block. Hover shades are derived with `color-mix()` and never overridden per theme |
+| `src/styles/base.css` | base | Reset, typography, links, focus ring, `.visually-hidden` |
+| `src/styles/components.css` | components | Styles shared by many tools or by always-loaded pages (sheet, buttons, tabs, stamps, form fields, choices) |
+| `<Component>.css` beside its `.tsx` | components | Styles one component owns (Layout, ToolPage, FileDrop, FileList, RunPanel, PageGrid, SignatureMaker, UpdateBanner, and single-tool files under `src/tools/`). Imported by that component, so Vite ships them in its lazy chunk |
+| `src/styles/utilities.css` | utilities | Layout helpers `.stack` (vertical grid) and `.cluster` (wrapping row). Spacing via `--gap` on the component |
+| `src/landing.css` | components | Landing and privacy pages (designed separately, Hallmark stamp at the top) |
+
+Rules of thumb:
+
+- No literal colours outside `tokens.css`. Need a tint or hover shade? Try
+  `color-mix(in oklab, var(--x) 10%, var(--paper))` in place or as a derived token, and check it in
+  both themes. Use `oklab`, not `oklch`: oklch interpolates hue (dark-mode blue + cream became
+  pink). When a derived colour looks wrong in one theme, as the dark status tints did, keep a
+  hand-picked token per theme instead.
+- Use native nesting for a component's states and children (`&:hover`, `& input`, nested
+  `@media`), including its `prefers-reduced-motion` override.
+- An element with `.stack` or `.cluster` takes its spacing from `--gap`. Setting `gap` in a
+  component rule has no effect there, because utilities win.
+- A rule that must beat another component's rule with the same specificity raises its own
+  specificity (`.field.inline-field`), rather than relying on file load order.
+
+## Known maintenance hotspots
 - Adding a tool touches 6+ files (above). If tools keep growing, a single registry that also
   holds the lazy component would remove step 6.
 - Firefox axe scans are quarantined in CI (see [STATUS.md](STATUS.md), Known gaps).

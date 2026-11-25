@@ -1,0 +1,71 @@
+/* Picked files as sheets with index tabs. Used by FileList and SingleFile. */
+@layer components {
+  /* Layout comes from .stack on the list. */
+  .sheets {
+    list-style: none;
+    margin: var(--space-4) 0 0;
+    padding: 0;
+  }
+
+  .sheet-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'tab name actions' 'tab meta actions';
+    align-items: center;
+    column-gap: var(--space-3);
+    padding: var(--space-2) var(--space-2) var(--space-2) 0;
+    border: 1px solid var(--paper-edge);
+    border-radius: var(--radius);
+    background: var(--paper);
+    cursor: grab;
+    transition:
+      opacity 160ms var(--ease-out),
+      transform 160ms var(--ease-out);
+
+    &[data-dragging] {
+      opacity: 0.5;
+      transform: scale(0.99);
+
+      @media (prefers-reduced-motion: reduce) {
+        transform: none;
+      }
+    }
+
+    /* Colour fades stay (they carry state); movement goes. */
+    @media (prefers-reduced-motion: reduce) {
+      transition: opacity 160ms var(--ease-out);
+    }
+
+    @media (max-width: 30rem) {
+      grid-template-areas: 'tab name name' 'tab meta actions';
+    }
+  }
+
+  .single-file {
+    cursor: default;
+  }
+
+  .sheet-name {
+    grid-area: name;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .sheet-meta {
+    grid-area: meta;
+    color: var(--ink-soft);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .note {
+    margin-left: var(--space-2);
+    color: var(--danger);
+  }
+
+  .row-actions {
+    grid-area: actions;
+    display: flex;
+    gap: var(--space-1);
+  }
+}

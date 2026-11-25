@@ -1,0 +1,7 @@
+/* OCR tool: compact language grid. Layout comes from .stack on the fieldset. */
+@layer components {
+  .choices.lang-choices {
+    --gap: 0 var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  }
+}

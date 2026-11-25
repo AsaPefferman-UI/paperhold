@@ -3,6 +3,7 @@ import { Link } from '../router.tsx';
 import { SITE } from '../site.ts';
 import { TOOLS } from '../tools.ts';
 import { UpdateBanner } from './UpdateBanner.tsx';
+import './Layout.css';
 
 /** Manila band with folder tabs; the current tool's tab joins the sheet below it. */
 export function Layout({ path, children }: { path: string; children: ReactNode }) {

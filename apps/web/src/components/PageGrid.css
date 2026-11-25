@@ -1,0 +1,82 @@
+/* Page thumbnails grid (organize, and page pickers in other tools). */
+@layer components {
+  .pages {
+    list-style: none;
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(8rem, 45%), 1fr));
+    gap: var(--space-4);
+  }
+
+  .page-tile {
+    position: relative;
+    display: grid;
+    gap: var(--space-2);
+    justify-items: center;
+    padding: var(--space-2);
+    border: 1px solid var(--paper-edge);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--manila-ground) 35%, var(--paper));
+    transition: opacity 160ms var(--ease-out);
+
+    &[draggable='true'] {
+      cursor: grab;
+    }
+
+    &[data-dragging] {
+      opacity: 0.5;
+    }
+  }
+
+  .page-thumb {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 1;
+
+    & img {
+      /* 82% leaves room for a quarter-turned portrait page to stay inside the square. */
+      max-width: 82%;
+      max-height: 82%;
+      box-shadow: var(--shadow);
+      background: var(--pdf-page);
+      transition: transform 200ms var(--ease-out);
+
+      &[data-rotate='90'] {
+        transform: rotate(90deg);
+      }
+      &[data-rotate='180'] {
+        transform: rotate(180deg);
+      }
+      &[data-rotate='270'] {
+        transform: rotate(270deg);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+  }
+
+  .page-label {
+    position: absolute;
+    top: var(--space-2);
+    left: 0;
+
+    & .tab {
+      margin-left: 0;
+    }
+  }
+
+  .page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    & .icon-button {
+      width: 2.25rem;
+      height: 2.75rem;
+    }
+  }
+}

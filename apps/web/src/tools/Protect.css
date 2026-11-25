@@ -1,0 +1,14 @@
+/* Protect tool: permissions legend and the password mismatch message. */
+@layer components {
+  .legend {
+    padding: 0;
+    margin-bottom: var(--space-1);
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  .hint-error {
+    color: var(--danger);
+    margin-bottom: var(--space-3);
+  }
+}

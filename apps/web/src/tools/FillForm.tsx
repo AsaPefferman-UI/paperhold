@@ -6,6 +6,7 @@ import { ToolPage } from '../components/ToolPage.tsx';
 import { isPdf, type PickedFile } from '../lib/files.ts';
 import { useOperation } from '../lib/useOperation.ts';
 import type { ToolMeta } from '../tools.ts';
+import './FillForm.css';
 
 type Editable = Exclude<FormField, { type: 'unsupported' }>;
 

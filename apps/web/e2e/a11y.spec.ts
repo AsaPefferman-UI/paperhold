@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
-import { TOOLS } from '../src/tools.ts';
+import { PAGES, TOOLS } from '../src/tools.ts';
 import { expect, fixture, test } from './fixtures.ts';
 
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
@@ -10,7 +10,7 @@ async function expectNoAxeViolations(page: Page) {
   expect(results.violations).toEqual([]);
 }
 
-for (const path of ['/', ...TOOLS.map((t) => t.path), '/no-such-tool']) {
+for (const path of [...PAGES.map((p) => p.path), ...TOOLS.map((t) => t.path), '/no-such-tool']) {
   test(`no axe violations on ${path}`, async ({ page }) => {
     await page.goto(path);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();

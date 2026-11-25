@@ -16,3 +16,6 @@ declare module 'tesseract.js-core/tesseract-core-lstm.js' {
   const factory: unknown;
   export default factory;
 }
+
+/** Public site settings from site.config.ts, injected at build time. */
+declare const __SITE__: import('./site.ts').PublicSite;

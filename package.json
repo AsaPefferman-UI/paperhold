@@ -22,7 +22,9 @@
     "test:e2e:local": "playwright test --project=chromium --project=webkit",
     "fixtures": "node packages/core/fixtures/generate.ts",
     "fuzz": "node packages/core/fuzz/fuzz.ts",
-    "licenses:check": "node scripts/check-licenses.ts"
+    "licenses:check": "node scripts/check-licenses.ts",
+    "images": "node scripts/generate-images.ts",
+    "check:launch": "node scripts/check-launch.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

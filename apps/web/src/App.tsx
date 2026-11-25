@@ -19,6 +19,7 @@ const Sign = lazy(() => import('./tools/Sign.tsx'));
 const Protect = lazy(() => import('./tools/Protect.tsx'));
 const Unlock = lazy(() => import('./tools/Unlock.tsx'));
 const Ocr = lazy(() => import('./tools/Ocr.tsx'));
+const Privacy = lazy(() => import('./pages/Privacy.tsx'));
 
 const ROUTES: Record<string, (tool: ToolMeta) => ReactNode> = {
   '/merge': (tool) => <Merge tool={tool} />,
@@ -44,6 +45,10 @@ export function App() {
     <Layout path={path}>
       {path === '/' ? (
         <Home />
+      ) : path === '/privacy' ? (
+        <Suspense fallback={<p className="loading">Loading…</p>}>
+          <Privacy />
+        </Suspense>
       ) : render && tool ? (
         <Suspense fallback={<p className="loading">Loading tool…</p>}>{render(tool)}</Suspense>
       ) : (

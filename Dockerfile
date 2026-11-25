@@ -7,8 +7,8 @@ COPY apps/web/package.json apps/web/
 COPY packages/core/package.json packages/core/
 RUN pnpm install --frozen-lockfile
 COPY . .
-ARG VITE_ANALYTICS_ORIGIN=""
-ARG VITE_SITE_URL=""
+ARG SITE_URL=""
+ARG SITE_CF_ANALYTICS_TOKEN=""
 RUN pnpm build && node apps/web/build/nginx-conf.ts > /tmp/default.conf
 
 FROM nginxinc/nginx-unprivileged:stable-alpine

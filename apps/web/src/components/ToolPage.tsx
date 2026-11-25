@@ -1,5 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
-import { SITE_NAME, type ToolMeta } from '../tools.ts';
+import { SITE } from '../site.ts';
+import type { ToolMeta } from '../tools.ts';
 import { ErrorBoundary } from './ErrorBoundary.tsx';
 import { Icon } from './Icon.tsx';
 
@@ -14,7 +15,7 @@ export function ToolPage({
   children: ReactNode;
 }) {
   useEffect(() => {
-    document.title = `${tool.name} | ${SITE_NAME}`;
+    document.title = `${tool.name} | ${SITE.name}`;
   }, [tool.name]);
   return (
     <div className="tool">

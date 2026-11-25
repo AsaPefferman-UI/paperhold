@@ -1,6 +1,8 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { Link } from '../router.tsx';
-import { SITE_NAME, TOOLS } from '../tools.ts';
+import { SITE } from '../site.ts';
+import { TOOLS } from '../tools.ts';
+import { UpdateBanner } from './UpdateBanner.tsx';
 
 /** Manila band with folder tabs; the current tool's tab joins the sheet below it. */
 export function Layout({ path, children }: { path: string; children: ReactNode }) {
@@ -19,7 +21,7 @@ export function Layout({ path, children }: { path: string; children: ReactNode }
       <header className="band">
         <div className="band-inner">
           <Link className="wordmark" href="/">
-            {SITE_NAME}
+            {SITE.name}
           </Link>
           <nav aria-label="Tools" ref={nav}>
             <ul className="tabs">
@@ -38,13 +40,14 @@ export function Layout({ path, children }: { path: string; children: ReactNode }
           </nav>
         </div>
       </header>
+      <UpdateBanner />
       <main id="main" className="main" tabIndex={-1}>
         {children}
       </main>
       <footer className="footer">
         <p>
-          Free and open source under AGPL-3.0. Every tool runs in your browser; your files are never
-          uploaded.
+          Free and open source under <a href={SITE.repoUrl}>AGPL-3.0</a>. Every tool runs in your
+          browser; your files are never uploaded. <Link href="/privacy">How to verify</Link>.
         </p>
       </footer>
     </>

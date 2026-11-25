@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { Link } from '../router.tsx';
-import { SITE_NAME } from '../tools.ts';
+import { SITE } from '../site.ts';
 
 export default function NotFound() {
   useEffect(() => {
-    document.title = `Page not found | ${SITE_NAME}`;
+    document.title = `Page not found | ${SITE.name}`;
   }, []);
   return (
     <div className="sheet">

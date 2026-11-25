@@ -4,8 +4,8 @@ services:
     build:
       context: .
       args:
-        VITE_ANALYTICS_ORIGIN: ${VITE_ANALYTICS_ORIGIN:-}
-        VITE_SITE_URL: ${VITE_SITE_URL:-}
+        SITE_URL: ${SITE_URL:-}
+        SITE_CF_ANALYTICS_TOKEN: ${SITE_CF_ANALYTICS_TOKEN:-}
     ports:
       - '8080:8080'
     read_only: true

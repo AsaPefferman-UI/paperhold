@@ -8,6 +8,7 @@ import {
 } from '@pdf-tools/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { pool } from '../worker/pool.ts';
+import { startBusy } from './busy.ts';
 import { revokeAll, toDownloads, type DownloadableFile } from './download.ts';
 
 export type OperationState =
@@ -40,6 +41,7 @@ export function useOperation<K extends OpName>(op?: K) {
       const ctl = new AbortController();
       controller.current = ctl;
       setState({ status: 'running', progress: null });
+      const endBusy = startBusy();
       try {
         const output = await task(ctl.signal, (progress) => {
           if (!ctl.signal.aborted) setState({ status: 'running', progress });
@@ -51,6 +53,7 @@ export function useOperation<K extends OpName>(op?: K) {
         const error = toOpError(err);
         setState(error.code === 'cancelled' ? { status: 'idle' } : { status: 'error', error });
       } finally {
+        endBusy();
         if (controller.current === ctl) controller.current = null;
       }
     },

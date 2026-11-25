@@ -105,5 +105,28 @@ export const TOOLS: readonly ToolMeta[] = [
   },
 ];
 
-export const SITE_NAME = 'pdf-tools';
-export const SITE_TAGLINE = 'Free PDF tools that never upload your files.';
+/** Non-tool pages with their own route, title, and description (for SEO and the sitemap). */
+export interface PageMeta {
+  path: `/${string}`;
+  /** Page title; the site name is appended (the home page uses the tagline instead). */
+  name: string;
+  description: string;
+}
+
+export const PAGES: readonly PageMeta[] = [
+  {
+    path: '/',
+    name: 'Free PDF tools that never upload your files',
+    description:
+      'Merge, split, compress, convert, sign and OCR PDFs in your browser. Your files never leave your device.',
+  },
+  {
+    path: '/privacy',
+    name: 'How to verify we never upload your files',
+    description:
+      'Check for yourself, in two minutes, that no file you open here is ever sent anywhere.',
+  },
+];
+
+/** Slug for per-route assets such as Open Graph images. */
+export const slugOf = (path: string) => (path === '/' ? 'home' : path.slice(1));

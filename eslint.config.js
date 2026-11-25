@@ -32,4 +32,15 @@ export default tseslint.config(
       '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
+  {
+    // Service worker template: placeholders are replaced at build time.
+    files: ['apps/web/build/sw-template.js'],
+    languageOptions: {
+      globals: {
+        ...globals.serviceworker,
+        __PRECACHE__: 'readonly',
+        __VERSIONED_DIRS__: 'readonly',
+      },
+    },
+  },
 );

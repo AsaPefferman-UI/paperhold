@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping. pdf-tools is free, private, and runs entirely in the browser; every change
+Thanks for helping. Paperhold is free, private, and runs entirely in the browser; every change
 must keep it that way.
 
 ## Setup

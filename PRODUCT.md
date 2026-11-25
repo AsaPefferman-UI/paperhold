@@ -55,7 +55,7 @@ DevTools and enforced by an automated test.
 
 ## Brand Commitments
 
-Codename `pdf-tools` is a placeholder name. No logo, palette, or voice has been committed.
+Product name: Paperhold (paperhold.app). No logo, palette, or voice beyond the shipped design has been committed.
 Open source under AGPL-3.0.
 
 ## Evidence on Hand

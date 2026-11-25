@@ -28,13 +28,13 @@ export interface SiteConfig {
 }
 
 export const SITE_CONFIG: SiteConfig = {
-  name: 'pdf-tools', // PLACEHOLDER: product name
+  name: 'Paperhold',
   tagline: 'Free PDF tools that never upload your files.',
-  url: 'https://pdf-tools.example', // PLACEHOLDER: production origin
-  repoUrl: 'https://github.com/OWNER/pdf-tools', // PLACEHOLDER: public repository
+  url: 'https://paperhold.app',
+  repoUrl: 'https://github.com/AsaPefferman-UI/paperhold',
   contact: {
-    security: 'security@pdf-tools.example', // PLACEHOLDER
-    conduct: 'conduct@pdf-tools.example', // PLACEHOLDER
+    security: 'security@paperhold.app',
+    conduct: 'conduct@paperhold.app',
   },
   // Analytics are OFF unless you opt in. To enable Cloudflare Web Analytics:
   //   analytics: { provider: 'cloudflare', token: '<beacon token>' },

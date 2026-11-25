@@ -1,4 +1,4 @@
-# pdf-tools
+# Paperhold
 
 Free, open-source PDF tools that run **entirely in your browser**. Merge, split, compress,
 convert, sign, and OCR PDFs without installing anything and without uploading your files to
@@ -6,8 +6,8 @@ anyone, including us.
 
 ![The Merge tool with two PDFs ready to combine](docs/screenshot-merge.png)
 
-> `pdf-tools` is a working name. To rename or re-domain the site, edit
-> `apps/web/site.config.ts` (one file) and follow [docs/LAUNCH.md](docs/LAUNCH.md).
+> Live at [paperhold.app](https://paperhold.app). Forks can rename or re-domain the site by
+> editing `apps/web/site.config.ts` (one file); see [docs/LAUNCH.md](docs/LAUNCH.md).
 
 ## Why you can trust it with private documents
 
@@ -31,7 +31,7 @@ See [docs/STATUS.md](docs/STATUS.md) for exactly what is done and verified.
 ## Run it locally (5 commands)
 
 ```sh
-git clone <this repository> pdf-tools && cd pdf-tools
+git clone https://github.com/AsaPefferman-UI/paperhold.git && cd paperhold
 corepack pnpm install          # or: npx pnpm@10.34.9 install
 corepack pnpm build
 corepack pnpm preview          # http://localhost:3103 with production headers

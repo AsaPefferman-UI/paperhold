@@ -29,19 +29,18 @@ describe('site config', () => {
   });
 
   it('lists the placeholders that must be replaced before launch', () => {
-    expect(placeholders(SITE_CONFIG)).toEqual([
-      'url',
-      'repoUrl',
-      'contact.security',
-      'contact.conduct',
-    ]);
     expect(
       placeholders({
         ...SITE_CONFIG,
-        url: 'https://pdf.real.org',
-        repoUrl: 'https://github.com/real/pdf',
-        contact: { security: 'sec@real.org', conduct: 'coc@real.org' },
+        url: 'https://pdf-tools.example',
+        repoUrl: 'https://github.com/OWNER/pdf-tools',
+        contact: { security: 'security@pdf-tools.example', conduct: 'conduct@pdf-tools.example' },
       }),
-    ).toEqual([]);
+    ).toEqual(['url', 'repoUrl', 'contact.security', 'contact.conduct']);
+  });
+
+  it('ships the real Paperhold config with no placeholders left', () => {
+    expect(placeholders(SITE_CONFIG)).toEqual([]);
+    expect(resolveSite({}).url).toBe('https://paperhold.app');
   });
 });

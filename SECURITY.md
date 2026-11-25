@@ -1,6 +1,6 @@
 # Security policy
 
-pdf-tools processes every file in your browser. Its core promise is that files never leave your
+Paperhold processes every file in your browser. Its core promise is that files never leave your
 device. Anything that could break that promise is a vulnerability we want to hear about.
 
 ## Reporting a vulnerability

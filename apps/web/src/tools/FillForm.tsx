@@ -121,7 +121,8 @@ function FieldInput({
 
 export default function FillForm({ tool }: { tool: ToolMeta }) {
   const [file, setFile] = useState<PickedFile | null>(null);
-  const [values, setValues] = useState<Record<string, FieldValue>>({});
+  // A Map, not an object: field names come from the file and may be "__proto__" or similar.
+  const [values, setValues] = useState<Map<string, FieldValue>>(new Map());
   const [flatten, setFlatten] = useState(false);
   const inspect = useOperation('inspectForm');
   const fill = useOperation('fillForm');
@@ -138,13 +139,17 @@ export default function FillForm({ tool }: { tool: ToolMeta }) {
   const fields =
     file && inspect.state.status === 'done' ? (inspect.state.data as FormField[]) : null;
   const editable = (fields ?? []).filter((f): f is Editable => f.type !== 'unsupported');
-  const valueOf = (f: Editable): FieldValue => values[f.name] ?? f.value;
+  const valueOf = (f: Editable): FieldValue => values.get(f.name) ?? f.value;
 
   const save = () =>
     fill.run(async () => {
       const bytes = await file!.file.arrayBuffer();
       return {
-        args: { file: { name: file!.file.name, bytes }, values, flatten },
+        args: {
+          file: { name: file!.file.name, bytes },
+          values: Object.fromEntries(values),
+          flatten,
+        },
         transfer: [bytes],
       };
     });
@@ -161,7 +166,7 @@ export default function FillForm({ tool }: { tool: ToolMeta }) {
           file={file}
           onChange={(f) => {
             setFile(f);
-            setValues({});
+            setValues(new Map());
             fill.reset();
             if (!f) inspect.reset();
           }}
@@ -186,7 +191,7 @@ export default function FillForm({ tool }: { tool: ToolMeta }) {
                 field={f}
                 value={valueOf(f)}
                 onChange={(v) => {
-                  setValues((prev) => ({ ...prev, [f.name]: v }));
+                  setValues((prev) => new Map(prev).set(f.name, v));
                   if (fill.state.status !== 'running') fill.reset();
                 }}
               />

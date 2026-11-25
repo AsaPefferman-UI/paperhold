@@ -25,3 +25,20 @@ All notable changes to this project are documented here. The format is based on
 - M5: OCR (make searchable): tesseract.js-core WASM in a dedicated worker, self-hosted engine and
   language data (English, German, French, Spanish) checked against SHA-256 hashes compiled into
   the app, invisible text layer, progress with time left, cancel.
+- M6 launch hardening:
+  - Landing page and "How to verify we never upload your files" page; per-route titles,
+    descriptions, canonical URLs, Open Graph images, sitemap, robots.txt, web app manifest.
+  - Offline support: service worker precaches the app shell and caches engines on first use;
+    "Reload for update" prompt that never swaps code while a file is being processed.
+  - One site config (`apps/web/site.config.ts`) for name, domain, contacts and analytics;
+    analytics off by default (optional Cloudflare Web Analytics, CSP widened only when enabled).
+  - Mutation fuzzer over every operation (short pass in CI, nightly long pass).
+  - Lighthouse gate in CI (performance >= 90, accessibility = 100 on every page).
+  - Release workflow gated by a reviewed environment and a `main` check; Cloudflare Pages
+    config, deploy runbook and launch checklist.
+
+### Fixed
+
+- Protect now repairs slightly damaged PDFs (pdf-lib) before encrypting, instead of failing.
+- Compress caps decompressed image size at the image's declared dimensions.
+- Fill form handles field names such as `__proto__` safely.

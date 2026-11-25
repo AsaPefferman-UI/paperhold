@@ -6,7 +6,8 @@ anyone, including us.
 
 ![The Merge tool with two PDFs ready to combine](docs/screenshot-merge.png)
 
-> `pdf-tools` is a working name.
+> `pdf-tools` is a working name. To rename or re-domain the site, edit
+> `apps/web/site.config.ts` (one file) and follow [docs/LAUNCH.md](docs/LAUNCH.md).
 
 ## Why you can trust it with private documents
 
@@ -16,16 +17,14 @@ anyone, including us.
 - Our end-to-end tests fail the build if any request leaves our origin or carries more than
   1 KB, and if any CSP violation occurs.
 - Check it yourself: open DevTools, Network tab, run a tool, and watch nothing get uploaded.
+  The site's `/privacy` page walks through it.
 
 ## Tools
 
-| Tool                                                        | Status       |
-| ----------------------------------------------------------- | ------------ |
-| Merge PDFs                                                  | Available    |
-| Split, organize (reorder/rotate/delete), page numbers, watermark | Available |
-| Images to PDF (incl. HEIC), PDF to images, compress | Available |
-| Fill forms, visual signature, password protect/unlock | Available |
-| OCR (make scans searchable) | Available |
+Merge, Split, Organize pages (reorder, rotate, delete), Page numbers, Watermark, Compress,
+Images to PDF (JPG, PNG, HEIC and more), PDF to images, Fill form, Sign (visual signature),
+Protect and Unlock (AES-256), and OCR (make scans searchable). Every tool works offline after
+your first visit.
 
 See [docs/STATUS.md](docs/STATUS.md) for exactly what is done and verified.
 

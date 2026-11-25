@@ -72,3 +72,17 @@ Detector: no findings. Screens checked at 1280 (light, mid-run) and 375 (dark, d
 | 3 | Theming | 4 | No new colours. |
 | 4 | Responsive | 3 -> 4 | Four language rows were taller than the rest of the step: now a compact grid. |
 | 5 | Implementation integrity | 3 -> 4 | Languages could be changed mid-run without effect: the fieldset is disabled while reading. |
+
+## M6: Landing, privacy, update banner (hallmark for the Persuade pages)
+
+Hallmark ran headless inside the locked DESIGN.md system (no theme dealt). Picks: genre
+editorial; job "try a tool"; hero = promise beside a real screenshot of the Merge tool;
+signature = the live `connect-src 'self'` line rendered from the same code that sets the header;
+material: real tools, CSP, AGPL, offline use; absent: metrics, quotes, logos (none invented).
+Sloplint: 0 FAIL, 1 REFLEX fixed (`:active` states), 1 WARN fixed (balanced display heads), 1 WARN
+waived (privacy H1 is the requested title). Impeccable detector: no findings.
+
+Fixes from the screenshot pass: the folder-tab rules had been deleted with the interim home
+styles (tabs wrapped onto three rows) and were restored; the privacy page's policy now shows one
+directive per line instead of breaking inside directive names; fact list icons stay beside their
+text on phones. Lighthouse: see STATUS.md.

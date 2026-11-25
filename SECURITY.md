@@ -6,7 +6,8 @@ device. Anything that could break that promise is a vulnerability we want to hea
 ## Reporting a vulnerability
 
 Report privately through **GitHub Security Advisories** ("Report a vulnerability" on the
-repository's Security tab). Please do not open a public issue.
+repository's Security tab), or by email to the security contact listed on the site's
+`/privacy` page (set in `apps/web/site.config.ts`). Please do not open a public issue.
 
 Include what you found, how to reproduce it (a synthetic PDF is ideal; never send real private
 documents), and the impact you believe it has.

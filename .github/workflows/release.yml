@@ -14,6 +14,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Required reviewers on this environment gate every release build (docs/LAUNCH.md), so a
+    # pushed tag alone cannot produce a signed provenance statement.
+    environment: release
     permissions:
       contents: write
       id-token: write
@@ -23,6 +26,12 @@ jobs:
       SITE_CF_ANALYTICS_TOKEN: ${{ vars.SITE_CF_ANALYTICS_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Only release commits that are on main
+        run: |
+          git fetch origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main || { echo "Tag is not on main"; exit 1; }
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:

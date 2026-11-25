@@ -49,11 +49,16 @@ export async function runQpdf(
   }
   for (const [name, bytes] of Object.entries(inputs)) mod.FS.writeFile(`/${name}`, bytes);
   let code: number;
+  // Under Node, Emscripten's exit() also sets process.exitCode; keep qpdf's status out of ours.
+  const proc = (globalThis as { process?: { exitCode?: number | string } }).process;
+  const exitCode = proc?.exitCode;
   try {
     code = mod.callMain(args);
   } catch (e) {
     const status = (e as { status?: unknown }).status;
     code = typeof status === 'number' ? status : 99;
+  } finally {
+    if (proc) proc.exitCode = exitCode;
   }
   const files: Record<string, Uint8Array> = {};
   for (const name of outputs) {

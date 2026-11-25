@@ -2,39 +2,29 @@
 
 pdf-tools is a static site. `pnpm build` writes everything to `apps/web/dist`:
 
-- `index.html`, one `<tool>/index.html` per tool route (own title and description for search),
-  `404.html`, and hashed assets under `assets/`.
-- `_headers`: the Content Security Policy and other security headers in Cloudflare Pages format,
-  generated from `apps/web/security-headers.ts` (the single source of truth).
-- `sitemap.xml` when `VITE_SITE_URL` is set.
+- `index.html`, one `<route>/index.html` per tool and page (own title, description, canonical
+  URL and Open Graph tags), `404.html`, and hashed assets under `assets/`.
+- `_headers`: the Content Security Policy, security headers and caching rules in Cloudflare
+  Pages format, generated from `apps/web/security-headers.ts` (the single source of truth).
+- `sitemap.xml`, `robots.txt`, `manifest.webmanifest`, `sw.js` (offline support).
+- `pdfjs-<version>/` and `ocr-<version>/`: self-hosted engine data, cached immutably.
+
+Site name, URL, contacts and analytics come from `apps/web/site.config.ts`, with optional
+`SITE_*` build-time overrides (`.env.example`).
 
 ## Cloudflare Pages (the hosted instance)
 
-Nothing in this repository deploys by itself. To enable it, the owner:
+Deploys happen only from the Release workflow on a signed tag, through protected GitHub
+environments. Setup is in [LAUNCH.md](LAUNCH.md) (steps 10-16); day-to-day operation, verifying
+and rollback are in [runbooks/deploy.md](runbooks/deploy.md).
 
-1. Creates a Pages project (direct upload, no Git integration, so only CI can deploy).
-2. Protects the Cloudflare account with hardware-key 2FA.
-3. In GitHub, creates a `production` environment with required reviewers, then sets:
-   - secrets `CLOUDFLARE_API_TOKEN` (Pages:Edit only) and `CLOUDFLARE_ACCOUNT_ID`;
-   - variables `PAGES_PROJECT`, `SITE_URL`, and `DEPLOY_OWNER` (the repository owner).
-4. Protects `main` (required reviews, required CI checks) and signs release tags.
-
-Pushing a signed `v*` tag then runs `.github/workflows/release.yml`: build once, publish
-`SHA256SUMS` and SLSA provenance on the GitHub release, and deploy that exact artifact.
-
-## Verifying a deployment
-
-Anyone can check the live site matches a release:
+## Self-hosting
 
 ```sh
-gh attestation verify pdf-tools-site.tar.gz --repo <owner>/<repo>
-curl -sI https://<site>/ | grep -i content-security-policy
+docker compose up --build      # http://localhost:8080
 ```
 
-and compare deployed asset hashes with the release's `SHA256SUMS`.
-
-## Other hosts
-
-Serve `dist/` with the headers from `_headers` (or run the Docker image, whose nginx config is
-generated from the same source). Requirements: `try_files $uri $uri/index.html`, `404.html` for
-unknown paths, `application/wasm` MIME type, and long immutable caching for `assets/`.
+The image is unprivileged nginx with a config generated from the same header source
+(`apps/web/build/nginx-conf.ts`). Any other static host works if it serves `_headers`' rules,
+resolves `/route` to `route/index.html`, returns `404.html` for unknown paths, serves `.wasm` as
+`application/wasm`, and does not add `Content-Encoding` to files that are already compressed.

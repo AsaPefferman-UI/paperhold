@@ -18,3 +18,7 @@
 | Hostile form field names / values | Rendered as React text; field count capped at 2,000; values validated against field type and options | Done (M4) |
 | Tampered or substituted OCR engine / language data | Fetched only from our origin, SHA-256 checked against hashes compiled into the app before use; CSP unchanged (no blob: scripts) | Done (M5) |
 | Malicious scan images reaching the OCR engine | Pages are re-rendered by pdf.js to PNG first; one page at a time in a dedicated worker that is terminated on finish or cancel; 16 MP cap per page | Done (M5) |
+| Malicious or stale code via the service worker | Same-origin GET only; precache list and version generated at build; never activates itself (update button disabled while busy); cached pages keep their CSP headers | Done (M6) |
+| Release from an unreviewed tag | Release build in a `release` environment with required reviewers and a `main`-ancestry check; tag rulesets in docs/LAUNCH.md; refuses placeholder config | Done (M6, owner enables settings) |
+| Analytics leaking data | Off by default; opt-in Cloudflare Web Analytics only, token kept out of the bundle, CSP widened to exactly its two hosts, disclosed on /privacy | Done (M6) |
+| Zip-bomb image streams in Compress | Inflate capped at the declared image size | Done (M6) |

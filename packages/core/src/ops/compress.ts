@@ -89,9 +89,12 @@ function sourceOf(
   const f = filter instanceof PDFName ? filter.decodeText() : undefined;
   if (f === 'DCTDecode') return { src: { kind: 'jpeg', bytes: stream.contents }, width, height };
   if (f !== 'FlateDecode') return undefined;
-  let pixels: Uint8Array = unzlibSync(stream.contents);
   const predictor =
     parms instanceof PDFDict ? (num(ctx, parms.get(PDFName.of('Predictor'))) ?? 1) : 1;
+  // Inflate into a buffer of exactly the size the image needs, so a "zip bomb" stream cannot
+  // allocate more than its declared dimensions (fflate throws if the data would overflow it).
+  const expected = predictor >= 10 ? (width * ch + 1) * height : width * height * ch;
+  let pixels: Uint8Array = unzlibSync(stream.contents, { out: new Uint8Array(expected) });
   if (predictor >= 10) pixels = unpredictPng(pixels, width, height, ch);
   else if (predictor !== 1) return undefined;
   if (pixels.length < width * height * ch) return undefined;

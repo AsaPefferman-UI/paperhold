@@ -1,6 +1,7 @@
 # Status
 
-Last updated: M5 complete.
+Last updated: M6 complete. All six milestones are done; what remains before public launch is
+owner setup ([LAUNCH.md](LAUNCH.md)) and the checks below that only CI or a human can do.
 
 ## Milestones
 
@@ -11,65 +12,66 @@ Last updated: M5 complete.
 | M3 Convert (images to PDF incl. HEIC, PDF to images, compress) | Done |
 | M4 Forms and sign (fill/flatten, visual signature, protect/unlock) | Done |
 | M5 OCR (searchable PDFs, integrity-checked self-hosted engine) | Done |
-| M6 Hardening and launch | Not started |
+| M6 Hardening and launch (fuzzing, offline PWA, landing and privacy pages, SEO, Lighthouse, security audit, launch config) | Done |
 
 ## Verified locally (Windows 11, Node 24.19)
 
-- `pnpm typecheck`, `pnpm lint` (ESLint strict + Prettier), `pnpm test` (unit, core, web and
-  scripts projects), core coverage above 80%, `pnpm build`, license allowlist,
+- `pnpm typecheck`, `pnpm lint` (ESLint strict, zero warnings, Prettier), `pnpm test` (core,
+  web and scripts projects), core coverage above 80%, `pnpm build`, licence allowlist,
   `pnpm audit --audit-level=high` (1 moderate, 0 high).
-- Golden image tests (pdf.js + @napi-rs/canvas in Node) for page numbers, watermark, EXIF-rotated
-  images to PDF, compression output, flattened forms, and signatures (incl. a rotated page).
-- E2E on **Chromium and WebKit**: every tool's happy path and main error path, 1000-page
-  thumbnails, keyboard flows for merge and organize, axe on every route (derived from the tool
-  registry), CSP header on every route, CSP blocks exfiltration, network guard and its self-test.
-- Protect output verified as AES-256 (R6, AESv3) with qpdf `--show-encryption`; protect/unlock
-  round trip, wrong-password and not-encrypted errors.
-- Saved signature: opt-in, persists across reload, Forget deletes it (Chromium and WebKit).
-- OCR: real tesseract-core in Node makes the scanned fixture searchable with a pixel-identical
-  render; in the browser, only chosen languages download, a one-byte-tampered file is refused,
-  progress with time left and cancel work (Chromium and WebKit).
-- The OffscreenCanvas fallback (canvas work done on the page) is exercised by WebKit, whose
-  Windows build has no OffscreenCanvas.
+- Golden image tests (pdf.js + @napi-rs/canvas in Node) for page numbers, watermark, rotated
+  images, compression, flattened forms and signatures. Real tesseract-core OCR in Node.
+- `pnpm fuzz` (fixed seed, 520 runs across all 13 ops): 0 untyped failures. A longer
+  random-seed run is in docs below.
+- E2E on **Chromium and WebKit**: every tool's happy path and main error paths, landing and
+  privacy pages, per-route SEO metadata, sitemap, robots, manifest, 404 handling, offline (load
+  once, go offline, merge, open an unvisited page), the update prompt (waits, is disabled while
+  OCR runs, applies after), OCR integrity refusal, axe on every route, CSP header on every route,
+  CSP blocks exfiltration, network guard and its self-test.
+- Lighthouse (mobile defaults, Playwright's headless Chromium), all 15 pages: accessibility 100
+  everywhere; performance 97-100 (lowest: `/privacy` 97).
+- Hallmark sloplint on the landing and privacy pages: 0 FAIL (one WARN waived on record: the
+  privacy page's H1 is the title the brief names). The render tier needs puppeteer-core, which is
+  not installed, so pages were inspected from Playwright screenshots instead.
+- Impeccable detector on all UI files: no findings.
+- Security audit (security-audit skill, quick profile, source-only): 0 confirmed findings; two
+  needs-validation leads and two hardening notes, all addressed (`docs/security-review.md`).
 
 ## Verified only in CI (not runnable on this machine)
 
 - **Firefox e2e**: Playwright's Firefox fails to launch here (`spawn UNKNOWN`, likely local
   security software). It is in the CI matrix.
-- Docker image build and Trivy scan (Docker is not installed locally).
+- **Docker image** build, smoke test and Trivy scan (Docker is not installed locally).
 - gitleaks, CodeQL, dependency review (GitHub-hosted).
-- Nothing has been pushed, so CI has not actually run yet.
+- **Nothing has been pushed, so CI has never actually run.** First-run risks to watch: Firefox
+  (never run), Linux rendering differences in golden-image tests (1% pixel tolerance), and
+  Lighthouse scores on CI hardware.
 
 ## Known gaps
 
-- **HEIC (HEVC) has no automated test with a real photo**: no licence-clean sample exists in the
-  repo and the WASM build cannot encode HEVC. The decoder is wired, lazily loaded, and tested
-  for loading and error handling only (see ADR 0004).
-- Compress leaves CMYK, Indexed, 16-bit, JBIG2 and JPX images untouched; the 50 MB scanned PDF
-  in under 20 s target is not measured automatically yet.
-- Offline/PWA service worker is M6 (spec milestone order), so "works offline" is not yet true.
-- Lighthouse scores are not automated yet (planned for M6).
-- Watermark / page numbers: Latin (WinAnsi) text only; no live preview yet.
-- Form filling and typed text use Helvetica: Latin (WinAnsi) only. XFA-only forms are not
-  supported (pdf-lib drops XFA and keeps any AcroForm fields).
-- The typed signature uses installed script fonts (no font download), so its look varies by OS.
-- OCR: Latin-script languages only (English, German, French, Spanish); pages that already have
-  text are OCR'd again; speed not yet measured on real 300 DPI scans.
-- Batch mode (same operation over several files) is not offered for single-file tools yet.
-- `docs/screenshot-merge.png` is regenerated by `node scripts/screenshot.ts` against a preview.
+- The security audit could not execute code (no OS sandbox), cover WASM internals, or see
+  deployment settings that live in GitHub/Cloudflare (`docs/security-review.md`). Its prose
+  reports were not written (permission refusal in the sub-agent); the structured records are in
+  `~/security-audit-skill/pdf-tools/run-1/`.
+- HEIC (HEVC) has no automated test with a real photo (no licence-clean sample).
+- OCR and watermark/page numbers/forms: Latin-script text only. Pages that already contain text
+  are OCR'd again.
+- Performance targets in SPEC §7 (50 MB scan compress < 20 s, 3 s/page OCR on real scans) are
+  not measured on real-world files.
+- Manual release check (SPEC §12.1: outputs open in Acrobat Reader, Chrome, macOS Preview) is a
+  human step in LAUNCH.md.
+- Batch mode (one operation over several files) is not offered for single-file tools.
 
 ## Open questions for the owner
 
-1. Product name and domain (`pdf-tools` is a placeholder); `VITE_SITE_URL` for the sitemap.
-2. Analytics: self-hosted Plausible or Cloudflare Web Analytics? The CSP allows exactly one
-   origin via `VITE_ANALYTICS_ORIGIN`; none is configured.
-3. Cloudflare account, Pages project and GitHub `production` environment (see `docs/deploy.md`).
-4. Socket.dev (or similar) GitHub App installation for PR dependency review.
+1. Product name and domain, contact mailboxes (all in `apps/web/site.config.ts`).
+2. Analytics: keep none (default) or enable Cloudflare Web Analytics.
+3. Cloudflare account, Pages project, GitHub environments and secrets (LAUNCH.md C-D).
+4. Socket.dev (or similar) for pull-request dependency review.
 5. Brand: confirm or replace the manila-folder visual direction (`DESIGN.md`).
-6. A HEIC photo you own and are happy to publish under the project licence, to add to the corpus.
+6. A HEIC photo you own and are happy to publish, for the test corpus.
 
 ## Next step
 
-Write `docs/plan-M6.md`, then hardening and launch: nightly fuzzing job, offline PWA service worker
-(with the update prompt) and the offline e2e test, the hallmark landing page and the "how to
-verify we never upload your files" page, Lighthouse checks, and the full security audit.
+Follow [docs/LAUNCH.md](LAUNCH.md) from step 1. The first real milestone is the first green CI
+run on GitHub (step 7).

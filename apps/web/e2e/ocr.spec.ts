@@ -4,6 +4,10 @@ import { expect, fixture, test } from './fixtures.ts';
 
 const DONE = 'Done on this device. Nothing was uploaded.';
 
+// Offline behaviour is covered in offline.spec.ts. Here the service worker would sit between the
+// page and the network and hide the tampered response from request interception in WebKit.
+test.use({ serviceWorkers: 'block' });
+
 async function textOf(bytes: Buffer): Promise<string> {
   const task = getDocument({ data: new Uint8Array(bytes), verbosity: 0 });
   const doc = await task.promise;
@@ -39,8 +43,9 @@ test('OCR makes a scanned PDF searchable, with integrity-checked downloads from 
   expect(ocrRequests.some((p) => p.includes('deu-'))).toBe(false); // only chosen languages load
 });
 
-test('OCR refuses language data that fails its SHA-256 check', async ({ page }) => {
-  await page.route('**/ocr-*/eng-*', async (route) => {
+test('OCR refuses language data that fails its SHA-256 check', async ({ page, context }) => {
+  // context.route also covers fetches made through the service worker.
+  await context.route('**/ocr-*/eng-*', async (route) => {
     const res = await route.fetch();
     const body = Buffer.from(await res.body());
     body.writeUInt8(body.readUInt8(body.length - 1) ^ 0xff, body.length - 1); // one flipped byte

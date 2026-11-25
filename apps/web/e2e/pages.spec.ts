@@ -1,6 +1,9 @@
 import { contentSecurityPolicy } from '../security-headers.ts';
+import { resolveSite } from '../site.config.ts';
 import { PAGES, slugOf, TOOLS } from '../src/tools.ts';
 import { expect, test } from './fixtures.ts';
+
+const URL_BASE = resolveSite(process.env).url;
 
 test('landing page: the promise, a link to every tool, and the real policy line', async ({
   page,
@@ -39,7 +42,7 @@ test('every route has its own title, description, canonical URL and OG image', a
     const title = /<title>([^<]+)<\/title>/.exec(html)?.[1];
     expect(title, path).toBeTruthy();
     expect(html, path).toMatch(/<meta name="description" content="[^"]{20,}"/);
-    expect(html, path).toContain(`<link rel="canonical" href="https://pdf-tools.example${path}"`);
+    expect(html, path).toContain(`<link rel="canonical" href="${URL_BASE}${path}"`);
     expect(html, path).toContain(`/og/${slugOf(path)}.png`);
     const og = await request.get(`/og/${slugOf(path)}.png`);
     expect(og.headers()['content-type']).toContain('image/png');
@@ -49,9 +52,9 @@ test('every route has its own title, description, canonical URL and OG image', a
 test('sitemap, robots and web manifest', async ({ request }) => {
   const sitemap = await (await request.get('/sitemap.xml')).text();
   for (const { path } of [...PAGES, ...TOOLS])
-    expect(sitemap).toContain(`<loc>https://pdf-tools.example${path}</loc>`);
+    expect(sitemap).toContain(`<loc>${URL_BASE}${path}</loc>`);
   const robots = await (await request.get('/robots.txt')).text();
-  expect(robots).toContain('Sitemap: https://pdf-tools.example/sitemap.xml');
+  expect(robots).toContain(`Sitemap: ${URL_BASE}/sitemap.xml`);
   const manifest = await (await request.get('/manifest.webmanifest')).json();
   expect(manifest).toMatchObject({ start_url: '/', display: 'standalone' });
   expect(manifest.icons.map((i: { sizes: string }) => i.sizes)).toEqual(

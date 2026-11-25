@@ -16,6 +16,9 @@ pnpm build && pnpm test:e2e   # end-to-end tests against the production build
 ```
 
 `pnpm fixtures` regenerates the synthetic PDF corpus in `packages/core/fixtures/corpus`.
+`pnpm fuzz` runs the mutation fuzzer (`FUZZ_ITERATIONS`, `FUZZ_SEED`, `FUZZ_ONLY` to reproduce).
+`pnpm lighthouse` checks performance and accessibility against a running `pnpm preview`.
+`pnpm images` regenerates icons, Open Graph images and the landing screenshot (needs a preview).
 
 ## Layout
 

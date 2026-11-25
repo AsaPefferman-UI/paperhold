@@ -63,7 +63,10 @@ test('organize: a damaged PDF shows a friendly error', async ({ page }) => {
   await expect(page.getByRole('alert')).toContainText(/damaged|not a PDF/);
 });
 
-test('organize: thumbnails for 1000 pages arrive progressively', async ({ page }) => {
+test('organize: thumbnails for 1000 pages arrive progressively', async ({ page, browserName }) => {
+  // WebKit on Linux CI renders in software and is several times slower; the progressive behaviour
+  // is what this test guards, not raw speed (speed is checked in Chromium).
+  const slow = browserName === 'webkit' && !!process.env.CI;
   await page.goto('/organize');
   const start = Date.now();
   await page
@@ -72,10 +75,12 @@ test('organize: thumbnails for 1000 pages arrive progressively', async ({ page }
   const grid = page.getByRole('list', { name: 'Pages, in output order' });
   await expect(grid.getByRole('listitem')).toHaveCount(1000);
   await expect
-    .poll(() => grid.locator('img').count(), { timeout: 10_000 })
+    .poll(() => grid.locator('img').count(), { timeout: slow ? 45_000 : 10_000 })
     .toBeGreaterThanOrEqual(20);
+  // Progressive: the first thumbnails arrive long before all 1000 are rendered.
+  expect(await grid.locator('img').count()).toBeLessThan(1000);
   // Spec target is <1s for the first 20 on a mid-range laptop; CI machines vary, so assert loosely.
-  expect(Date.now() - start).toBeLessThan(8_000);
+  if (!slow) expect(Date.now() - start).toBeLessThan(8_000);
 });
 
 test('page numbers', async ({ page }) => {

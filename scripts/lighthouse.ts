@@ -37,11 +37,21 @@ for (const path of paths) {
   // On Windows the command goes through a shell, so quote arguments that contain spaces.
   const quoted =
     process.platform === 'win32' ? args.map((x) => (x.includes(' ') ? `"${x}"` : x)) : args;
-  execFileSync('npx', quoted, {
-    stdio: ['ignore', 'ignore', 'inherit'],
-    env: { ...process.env, CHROME_PATH: chrome, npm_config_ignore_scripts: 'true' },
-    shell: process.platform === 'win32',
-  });
+  // Lighthouse sometimes crashes while tracing headless Chrome on CI runners (e.g. NO_NAVSTART).
+  // Retry only those crashes; a completed run with low scores still fails below.
+  for (let attempt = 1; ; attempt++) {
+    try {
+      execFileSync('npx', quoted, {
+        stdio: ['ignore', 'ignore', 'inherit'],
+        env: { ...process.env, CHROME_PATH: chrome, npm_config_ignore_scripts: 'true' },
+        shell: process.platform === 'win32',
+      });
+      break;
+    } catch (err) {
+      if (attempt >= 3) throw err;
+      console.warn(`Lighthouse crashed on ${path} (attempt ${attempt}/3); retrying.`);
+    }
+  }
   const lhr = JSON.parse(readFileSync(report, 'utf8')) as {
     categories: Record<string, { score: number | null }>;
     audits: Record<string, { score: number | null; title: string }>;

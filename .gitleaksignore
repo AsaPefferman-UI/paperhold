@@ -1,0 +1,3 @@
+# Reviewed false positives only. Each line is a gitleaks fingerprint (commit:file:rule:line).
+# Fake Cloudflare analytics token used as a test fixture in site.config.test.ts.
+681ac1f2194553e1ae725195634fe60c46001fe1:apps/web/site.config.test.ts:generic-api-key:15

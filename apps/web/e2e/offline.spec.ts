@@ -18,7 +18,11 @@ async function waitForServiceWorker(page: Page) {
 test('works offline after the first visit: load once, go offline, merge', async ({
   page,
   context,
+  browserName,
 }) => {
+  // Playwright's offline emulation in Firefox fails navigations (NS_ERROR_OFFLINE) before the
+  // service worker can answer, so this can't be exercised there. Covered in Chromium and WebKit.
+  test.skip(browserName === 'firefox', 'Playwright offline emulation bypasses service workers');
   await page.goto('/');
   await waitForServiceWorker(page);
   await context.setOffline(true);

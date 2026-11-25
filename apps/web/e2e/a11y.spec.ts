@@ -6,7 +6,12 @@ import { expect, fixture, test } from './fixtures.ts';
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
 async function expectNoAxeViolations(page: Page) {
-  const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  // Full details for violations only: same rules and verdicts, but a much smaller result to pass
+  // back from the page (large results crashed Firefox's content process on CI).
+  const results = await new AxeBuilder({ page })
+    .withTags(TAGS)
+    .options({ resultTypes: ['violations'] })
+    .analyze();
   expect(results.violations).toEqual([]);
 }
 

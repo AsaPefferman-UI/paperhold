@@ -12,6 +12,9 @@ ARG SITE_CF_ANALYTICS_TOKEN=""
 RUN pnpm build && node apps/web/build/nginx-conf.ts > /tmp/default.conf
 
 FROM nginxinc/nginx-unprivileged:stable-alpine
+# Pick up Alpine security fixes released after the base image was built (Trivy gate).
+USER root
+RUN apk upgrade --no-cache
 COPY --from=build /tmp/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/apps/web/dist /usr/share/nginx/html
 USER 101

@@ -64,9 +64,9 @@ test('organize: a damaged PDF shows a friendly error', async ({ page }) => {
 });
 
 test('organize: thumbnails for 1000 pages arrive progressively', async ({ page, browserName }) => {
-  // WebKit on Linux CI renders in software and is several times slower; the progressive behaviour
-  // is what this test guards, not raw speed (speed is checked in Chromium).
-  const slow = browserName === 'webkit' && !!process.env.CI;
+  // On CI, only Chromium checks speed: WebKit renders in software and Firefox's timing varies run
+  // to run on shared runners. Every browser still checks that thumbnails arrive progressively.
+  const slow = browserName !== 'chromium' && !!process.env.CI;
   await page.goto('/organize');
   const start = Date.now();
   await page

@@ -25,7 +25,7 @@ anyone, including us.
 | Split, organize (reorder/rotate/delete), page numbers, watermark | Available |
 | Images to PDF (incl. HEIC), PDF to images, compress | Available |
 | Fill forms, visual signature, password protect/unlock | Available |
-| OCR (make scans searchable)                                 | Planned (M5) |
+| OCR (make scans searchable) | Available |
 
 See [docs/STATUS.md](docs/STATUS.md) for exactly what is done and verified.
 

@@ -16,3 +16,5 @@
 | Error reports leaking file names | Error boundary does not report anywhere; worker errors are mapped to fixed messages (`toOpError`) | Done (M1) |
 | Saved signature exposure | Opt-in only, stored in this origin's IndexedDB, Forget button deletes it, never transmitted (CSP) | Done (M4) |
 | Hostile form field names / values | Rendered as React text; field count capped at 2,000; values validated against field type and options | Done (M4) |
+| Tampered or substituted OCR engine / language data | Fetched only from our origin, SHA-256 checked against hashes compiled into the app before use; CSP unchanged (no blob: scripts) | Done (M5) |
+| Malicious scan images reaching the OCR engine | Pages are re-rendered by pdf.js to PNG first; one page at a time in a dedicated worker that is terminated on finish or cancel; 16 MP cap per page | Done (M5) |

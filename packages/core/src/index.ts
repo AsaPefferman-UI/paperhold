@@ -13,3 +13,5 @@ export { pdfToImages, MAX_PIXELS, type PageRenderer, type ImageType } from './op
 export { sniffImage, type ImageFormat } from './images.ts';
 export type { FormField, FieldValue } from './ops/forms.ts';
 export type { SignaturePlacement } from './ops/sign.ts';
+export * from './ocr.ts';
+export type { TextLayerPage } from './ops/text-layer.ts';

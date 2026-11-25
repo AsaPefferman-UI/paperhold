@@ -8,6 +8,7 @@ import type { ImagesToPdfArgs } from './ops/images-to-pdf.ts';
 import type { FillFormArgs, InspectFormArgs } from './ops/forms.ts';
 import type { ProtectArgs, UnlockArgs } from './ops/encryption.ts';
 import type { SignArgs } from './ops/sign.ts';
+import type { TextLayerArgs } from './ops/text-layer.ts';
 import type { QpdfFactory } from './qpdf.ts';
 
 /** A file produced by an operation. */
@@ -37,6 +38,7 @@ export interface OpArgs {
   sign: SignArgs;
   protect: ProtectArgs;
   unlock: UnlockArgs;
+  addTextLayer: TextLayerArgs;
 }
 
 export type OpName = keyof OpArgs;

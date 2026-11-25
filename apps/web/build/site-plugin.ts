@@ -13,6 +13,7 @@ import { createRequire } from 'node:module';
 import { dirname, join, normalize, sep } from 'node:path';
 import type { Plugin } from 'vite';
 import { securityHeaders } from '../security-headers.ts';
+import { OCR_BASE, ocrAssets, ocrManifest } from './ocr-assets.ts';
 import { SITE_NAME, TOOLS } from '../src/tools.ts';
 
 const escapeHtml = (s: string) =>
@@ -33,6 +34,8 @@ export function headersFile(analyticsOrigin: string): string {
     '/*',
     ...lines,
     '/assets/*',
+    '  Cache-Control: public, max-age=31536000, immutable',
+    '/ocr-*',
     '  Cache-Control: public, max-age=31536000, immutable',
     '/pdfjs-*',
     '  Cache-Control: public, max-age=31536000, immutable',
@@ -57,12 +60,30 @@ export function sitePlugin({ analyticsOrigin = '', siteUrl = '' } = {}): Plugin 
   return {
     name: 'pdf-tools-site',
     config() {
-      return { define: { __PDFJS_BASE__: JSON.stringify(PDFJS_BASE) } };
+      return {
+        define: {
+          __PDFJS_BASE__: JSON.stringify(PDFJS_BASE),
+          __OCR_MANIFEST__: JSON.stringify(ocrManifest()),
+        },
+      };
     },
     configResolved(config) {
       outDir = config.build.outDir;
     },
     configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (!req.url?.startsWith(OCR_BASE)) return next();
+        const found = ocrAssets().find((a) => req.url === `${OCR_BASE}${a.name}`);
+        if (!found) {
+          res.statusCode = 404;
+          return res.end();
+        }
+        res.setHeader(
+          'Content-Type',
+          found.name.endsWith('.wasm') ? 'application/wasm' : 'application/octet-stream',
+        );
+        createReadStream(found.source).pipe(res);
+      });
       server.middlewares.use((req, res, next) => {
         if (!req.url?.startsWith(PDFJS_BASE)) return next();
         const rel = normalize(decodeURIComponent(req.url.slice(PDFJS_BASE.length).split('?')[0]!));
@@ -103,6 +124,13 @@ export function sitePlugin({ analyticsOrigin = '', siteUrl = '' } = {}): Plugin 
         withMeta(index, `Page not found | ${SITE_NAME}`, 'There is no tool at this address.'),
       );
       writeFileSync(join(outDir, '_headers'), headersFile(analyticsOrigin));
+      mkdirSync(join(outDir, OCR_BASE), { recursive: true });
+      for (const a of ocrAssets()) cpSync(a.source, join(outDir, OCR_BASE, a.name));
+      writeFileSync(
+        join(outDir, OCR_BASE, 'manifest.json'),
+        `${JSON.stringify(ocrManifest(), null, 2)}
+`,
+      );
       for (const dir of PDFJS_DIRS) {
         cpSync(join(pdfjsDir, dir), join(outDir, PDFJS_BASE, dir), {
           recursive: true,

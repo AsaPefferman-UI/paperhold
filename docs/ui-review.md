@@ -60,3 +60,15 @@ Detector: no findings. Screens checked at 1280 (light) and 375 (dark).
 | 3 | Theming | 4 | Segmented control, notice, placement area all tokenised. |
 | 4 | Responsive | 3 -> 4 | Twelve tools overflowed the tab strip: tabs now use short labels and tighter padding; it still scrolls if needed, with the current tab kept in view. |
 | 5 | Implementation integrity | 3 -> 4 | The signature caveat first rendered as a grid item and pushed the steps out of line: it is now a permanent note under the title via a `notice` slot on the tool page. |
+
+## M5: OCR
+
+Detector: no findings. Screens checked at 1280 (light, mid-run) and 375 (dark, done).
+
+| # | Dimension | Score | Key finding |
+| --- | --- | --- | --- |
+| 1 | Accessibility | 4 | Page-by-page status is a polite live region; languages are native checkboxes; axe clean. |
+| 2 | Performance | 4 | Engine (2.9 MB) and only the chosen languages load on first use, inside a worker; the first-use download size is shown before starting. |
+| 3 | Theming | 4 | No new colours. |
+| 4 | Responsive | 3 -> 4 | Four language rows were taller than the rest of the step: now a compact grid. |
+| 5 | Implementation integrity | 3 -> 4 | Languages could be changed mid-run without effect: the fieldset is disabled while reading. |

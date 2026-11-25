@@ -22,3 +22,6 @@ All notable changes to this project are documented here. The format is based on
 - M4: Fill form (all AcroForm field types, optional flatten), Sign (visual signature: draw,
   type or upload; drag or keyboard placement; opt-in saved signature with Forget), Protect and
   Unlock (qpdf, AES-256 only).
+- M5: OCR (make searchable): tesseract.js-core WASM in a dedicated worker, self-hosted engine and
+  language data (English, German, French, Spanish) checked against SHA-256 hashes compiled into
+  the app, invisible text layer, progress with time left, cancel.

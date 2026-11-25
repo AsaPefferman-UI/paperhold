@@ -1052,3 +1052,8 @@ a:hover {
 .choices + .hint {
   margin-bottom: var(--space-4);
 }
+
+.lang-choices {
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: 0 var(--space-4);
+}

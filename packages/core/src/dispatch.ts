@@ -3,6 +3,7 @@ import { compress } from './ops/compress.ts';
 import { protect, unlock } from './ops/encryption.ts';
 import { fillForm, inspectForm } from './ops/forms.ts';
 import { sign } from './ops/sign.ts';
+import { addTextLayer } from './ops/text-layer.ts';
 import { imagesToPdf } from './ops/images-to-pdf.ts';
 import { merge } from './ops/merge.ts';
 import { organize } from './ops/organize.ts';
@@ -25,6 +26,7 @@ const registry: Registry = {
   sign,
   protect,
   unlock,
+  addTextLayer,
 };
 
 export function isOpName(op: unknown): op is OpName {

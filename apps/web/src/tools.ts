@@ -96,6 +96,13 @@ export const TOOLS: readonly ToolMeta[] = [
     description: 'Remove the password from a PDF you can open.',
     accept: 'application/pdf,.pdf',
   },
+  {
+    path: '/ocr',
+    name: 'OCR: make searchable',
+    tab: 'OCR',
+    description: 'Recognise the text in a scanned PDF so you can search, select and copy it.',
+    accept: 'application/pdf,.pdf',
+  },
 ];
 
 export const SITE_NAME = 'pdf-tools';

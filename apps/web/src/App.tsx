@@ -18,6 +18,7 @@ const FillForm = lazy(() => import('./tools/FillForm.tsx'));
 const Sign = lazy(() => import('./tools/Sign.tsx'));
 const Protect = lazy(() => import('./tools/Protect.tsx'));
 const Unlock = lazy(() => import('./tools/Unlock.tsx'));
+const Ocr = lazy(() => import('./tools/Ocr.tsx'));
 
 const ROUTES: Record<string, (tool: ToolMeta) => ReactNode> = {
   '/merge': (tool) => <Merge tool={tool} />,
@@ -32,6 +33,7 @@ const ROUTES: Record<string, (tool: ToolMeta) => ReactNode> = {
   '/sign': (tool) => <Sign tool={tool} />,
   '/protect': (tool) => <Protect tool={tool} />,
   '/unlock': (tool) => <Unlock tool={tool} />,
+  '/ocr': (tool) => <Ocr tool={tool} />,
 };
 
 export function App() {

@@ -1,0 +1,6 @@
+# Cloudflare Pages project settings, used by `wrangler pages deploy` in .github/workflows/release.yml.
+# The build output already contains `_headers` (CSP and caching) and `404.html`.
+# Replace the name with your Pages project (docs/LAUNCH.md). Deploys happen only from CI.
+name = "pdf-tools" # PLACEHOLDER: Cloudflare Pages project name
+pages_build_output_dir = "apps/web/dist"
+compatibility_date = "2026-11-01"

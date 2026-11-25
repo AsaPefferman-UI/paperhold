@@ -246,6 +246,24 @@ describe('password protect / unlock', () => {
     ).rejects.toMatchObject({ code: 'wrong_password' });
   });
 
+  it('protects a slightly damaged file by repairing it first', async () => {
+    const out = await runOp(
+      'protect',
+      {
+        file: file('broken-xref.pdf'),
+        userPassword: 'pw',
+        allowPrinting: true,
+        allowCopying: true,
+        allowEditing: true,
+      },
+      ctx,
+    );
+    const info = await qpdf(['--password=pw', '--show-encryption', '/in.pdf'], {
+      'in.pdf': out.files[0]!.bytes,
+    });
+    expect(info.stdout).toContain('R = 6');
+  });
+
   it('refuses to double-encrypt, to unlock plain files, and garbage', async () => {
     const opts = { userPassword: 'x', allowPrinting: true, allowCopying: true, allowEditing: true };
     await expect(

@@ -79,23 +79,33 @@ export async function protect(args: ProtectArgs, ctx: OpContext): Promise<OpOutp
     );
   }
   ctx.progress(0.3);
-  const r = await run(
-    ctx,
-    [
-      // Named forms, so a password that starts with "-" can never be read as an option.
-      '--encrypt',
-      `--user-password=${user}`,
-      `--owner-password=${owner}`,
-      '--bits=256',
-      `--print=${args.allowPrinting ? 'full' : 'none'}`,
-      `--extract=${args.allowCopying ? 'y' : 'n'}`,
-      `--modify=${args.allowEditing ? 'all' : 'none'}`,
-      '--',
-      '/in.pdf',
-      '/out.pdf',
-    ],
-    input,
-  );
+  const encrypt = (bytes: Uint8Array) =>
+    run(
+      ctx,
+      [
+        // Named forms, so a password that starts with "-" can never be read as an option.
+        '--encrypt',
+        `--user-password=${user}`,
+        `--owner-password=${owner}`,
+        '--bits=256',
+        `--print=${args.allowPrinting ? 'full' : 'none'}`,
+        `--extract=${args.allowCopying ? 'y' : 'n'}`,
+        `--modify=${args.allowEditing ? 'all' : 'none'}`,
+        '--',
+        '/in.pdf',
+        '/out.pdf',
+      ],
+      bytes,
+    );
+  let r = await encrypt(input);
+  if (!ok(r)) {
+    // qpdf is strict about broken xref streams; pdf-lib often recovers them. Retry once with a
+    // clean copy so a slightly damaged file can still be protected.
+    const repaired = await PDFDocument.load(input, { updateMetadata: false })
+      .then((doc) => doc.save({ useObjectStreams: false }))
+      .catch(() => undefined);
+    if (repaired) r = await encrypt(repaired);
+  }
   if (!ok(r))
     throw new PdfToolsError(
       'damaged',

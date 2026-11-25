@@ -24,7 +24,8 @@
     "fuzz": "node packages/core/fuzz/fuzz.ts",
     "licenses:check": "node scripts/check-licenses.ts",
     "images": "node scripts/generate-images.ts",
-    "check:launch": "node scripts/check-launch.ts"
+    "check:launch": "node scripts/check-launch.ts",
+    "lighthouse": "node scripts/lighthouse.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

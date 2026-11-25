@@ -22,3 +22,4 @@
 | Release from an unreviewed tag | Release build in a `release` environment with required reviewers and a `main`-ancestry check; tag rulesets in docs/LAUNCH.md; refuses placeholder config | Done (M6, owner enables settings) |
 | Analytics leaking data | Off by default; opt-in Cloudflare Web Analytics only, token kept out of the bundle, CSP widened to exactly its two hosts, disclosed on /privacy | Done (M6) |
 | Zip-bomb image streams in Compress | Inflate capped at the declared image size | Done (M6) |
+| Parser hangs on crafted files (found by fuzzing) | `preflight()` rejects absurd xref stream widths/counts; `validatePng()` checks PNG structure and exact inflated size; worker pool timeout terminates anything else | Done (M6) |

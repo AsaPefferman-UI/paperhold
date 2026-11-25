@@ -42,3 +42,5 @@ All notable changes to this project are documented here. The format is based on
 - Protect now repairs slightly damaged PDFs (pdf-lib) before encrypting, instead of failing.
 - Compress caps decompressed image size at the image's declared dimensions.
 - Fill form handles field names such as `__proto__` safely.
+- Two inputs found by fuzzing that made pdf-lib spin (a cross-reference stream with absurd
+  field widths, a truncated PNG) are now rejected immediately with a clear error.

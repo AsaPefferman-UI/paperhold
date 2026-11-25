@@ -2,7 +2,7 @@
 // certified e-signature, and the UI says so.
 import { degrees } from 'pdf-lib';
 import { PdfToolsError } from '../errors.ts';
-import { sniffImage } from '../images.ts';
+import { sniffImage, validatePng } from '../images.ts';
 import { baseName, PDF_MIME } from '../output.ts';
 import { forFile, loadPdf, savePdf } from '../pdf.ts';
 import type { OpContext, OpOutput } from '../protocol.ts';
@@ -34,6 +34,13 @@ export async function sign(args: SignArgs, ctx: OpContext): Promise<OpOutput> {
   const format = sniffImage(image);
   if (format !== 'png' && format !== 'jpeg') {
     throw new PdfToolsError('invalid_input', 'The signature must be a PNG or JPG image.');
+  }
+  if (format === 'png') {
+    try {
+      validatePng(image);
+    } catch {
+      throw new PdfToolsError('invalid_input', 'The signature image is damaged.');
+    }
   }
   return forFile(args.file.name, async () => {
     const doc = await loadPdf(args.file.bytes);

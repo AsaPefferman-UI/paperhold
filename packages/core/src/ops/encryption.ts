@@ -1,7 +1,7 @@
 // Password protect / unlock via qpdf. AES-256 (R6) only: RC4 and AES-128 are never offered.
 import { PDFDocument } from 'pdf-lib';
 import { PdfToolsError } from '../errors.ts';
-import { looksLikePdf } from '../pdf.ts';
+import { looksLikePdf, preflight } from '../pdf.ts';
 import { baseName, PDF_MIME } from '../output.ts';
 import type { OpContext, OpOutput, Services } from '../protocol.ts';
 import { runQpdf, type QpdfResult } from '../qpdf.ts';
@@ -43,6 +43,11 @@ const ok = (r: QpdfResult) => (r.code === 0 || r.code === 3) && !!r.files['out.p
 
 function checkInput(name: string, bytes: Uint8Array): void {
   if (!looksLikePdf(bytes)) throw new PdfToolsError('damaged', `${name}: This file is not a PDF.`);
+  try {
+    preflight(bytes);
+  } catch (err) {
+    throw new PdfToolsError('damaged', `${name}: ${(err as Error).message}`);
+  }
 }
 
 function randomPassword(): string {

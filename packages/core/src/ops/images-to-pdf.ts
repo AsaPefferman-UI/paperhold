@@ -1,6 +1,6 @@
 import { degrees, PDFDocument, type PDFImage } from 'pdf-lib';
 import { PdfToolsError } from '../errors.ts';
-import { jpegOrientation, orientationDegrees, sniffImage } from '../images.ts';
+import { jpegOrientation, orientationDegrees, sniffImage, validatePng } from '../images.ts';
 import { PDF_MIME } from '../output.ts';
 import type { OpContext, OpOutput } from '../protocol.ts';
 
@@ -53,6 +53,15 @@ export async function imagesToPdf(args: ImagesToPdfArgs, ctx: OpContext): Promis
           'damaged',
           `${file.name}: this image is damaged or could not be decoded.`,
         );
+      }
+    }
+    if (format === 'png') {
+      try {
+        validatePng(bytes);
+      } catch (err) {
+        if (err instanceof PdfToolsError)
+          throw new PdfToolsError(err.code, `${file.name}: ${err.message}`);
+        throw err;
       }
     }
     let image: PDFImage;

@@ -56,7 +56,17 @@ content is absent, and that a flattened form has no field dictionaries or stored
 
 ## Other M6 hardening
 
-- Fuzzer: mutated corpus PDFs and images through all 13 ops; only typed errors allowed
-  (`pnpm fuzz`, nightly with random seeds). It led to `protect` repairing slightly damaged
-  files with pdf-lib before retrying qpdf.
+- Fuzzer: mutated corpus PDFs and images through all 13 ops. Only typed errors are allowed,
+  and each case runs in a worker thread that is killed after 20 s (`pnpm fuzz`, nightly with
+  random seeds). Findings, all fixed with regression fixtures in
+  `packages/core/fixtures/regressions/`:
+  - **Hang (DoS of the user's own tab):** a cross-reference stream with `/W [1 2 999999999]`
+    made pdf-lib spin. `preflight()` now rejects absurd xref field widths and entry counts
+    before parsing.
+  - **Hang:** a PNG whose image data is truncated made pdf-lib's PNG decoder spin.
+    `validatePng()` now checks the chunk structure and that the data inflates to exactly the
+    declared size before embedding.
+  - `protect` now repairs slightly damaged files with pdf-lib before retrying qpdf.
+  In the browser these hangs were already bounded by the worker pool's 5-minute timeout, which
+  terminates the worker; they now fail in milliseconds with a clear message.
 - Release workflow refuses to ship while `apps/web/site.config.ts` holds placeholders.

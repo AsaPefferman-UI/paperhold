@@ -14,6 +14,37 @@ export function looksLikePdf(bytes: Uint8Array): boolean {
   return false;
 }
 
+/**
+ * Reject structures that make pdf-lib's parser spin for minutes on a tiny file (found by the
+ * fuzzer): cross-reference streams with absurd field widths (`/W`) or entry counts (`/Index`).
+ * Scans in overlapping chunks so large files are not decoded to one huge string.
+ */
+export function preflight(bytes: Uint8Array): void {
+  const CHUNK = 4 * 1024 * 1024;
+  const OVERLAP = 256;
+  const decoder = new TextDecoder('latin1');
+  const widths = /\/W\s*\[\s*(\d+)\s+(\d+)\s+(\d+)\s*\]/g;
+  const index = /\/Index\s*\[([\d\s]{1,2000})\]/g;
+  for (let start = 0; start < bytes.length; start += CHUNK) {
+    const text = decoder.decode(
+      bytes.subarray(start, Math.min(bytes.length, start + CHUNK + OVERLAP)),
+    );
+    for (const m of text.matchAll(widths)) {
+      if ([m[1], m[2], m[3]].some((w) => Number(w) > 8)) {
+        throw new PdfToolsError('damaged', 'This PDF has an invalid cross-reference table.');
+      }
+    }
+    for (const m of text.matchAll(index)) {
+      const nums = m[1]!.trim().split(/\s+/).map(Number);
+      let total = 0;
+      for (let i = 1; i < nums.length; i += 2) total += nums[i]!;
+      if (total > 10_000_000) {
+        throw new PdfToolsError('damaged', 'This PDF has an invalid cross-reference table.');
+      }
+    }
+  }
+}
+
 export interface LoadOptions {
   maxPages?: number;
 }
@@ -29,6 +60,7 @@ export async function loadPdf(
 ): Promise<PDFDocument> {
   const bytes = input instanceof Uint8Array ? input : new Uint8Array(input);
   if (!looksLikePdf(bytes)) throw new PdfToolsError('damaged', 'This file is not a PDF.');
+  preflight(bytes);
   let doc: PDFDocument;
   try {
     // pdf-lib's EncryptedPDFError breaks `instanceof` (ES5 output), so check the flag instead.

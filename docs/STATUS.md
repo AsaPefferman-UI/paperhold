@@ -21,8 +21,10 @@ owner setup ([LAUNCH.md](LAUNCH.md)) and the checks below that only CI or a huma
   `pnpm audit --audit-level=high` (1 moderate, 0 high).
 - Golden image tests (pdf.js + @napi-rs/canvas in Node) for page numbers, watermark, rotated
   images, compression, flattened forms and signatures. Real tesseract-core OCR in Node.
-- `pnpm fuzz` (fixed seed, 520 runs across all 13 ops): 0 untyped failures. A longer
-  random-seed run is in docs below.
+- Fuzzing (each case in a worker thread killed after 20 s): the CI pass (520 runs, fixed seed),
+  a 5,200-run pass with seed 777, and a 26,000-run random-seed pass, all with 0 failures. The
+  first long runs found two hangs (absurd xref stream field widths; a truncated PNG); both are
+  fixed, with regression fixtures in `packages/core/fixtures/regressions/`.
 - E2E on **Chromium and WebKit**: every tool's happy path and main error paths, landing and
   privacy pages, per-route SEO metadata, sitemap, robots, manifest, 404 handling, offline (load
   once, go offline, merge, open an unvisited page), the update prompt (waits, is disabled while
@@ -43,6 +45,8 @@ owner setup ([LAUNCH.md](LAUNCH.md)) and the checks below that only CI or a huma
   security software). It is in the CI matrix.
 - **Docker image** build, smoke test and Trivy scan (Docker is not installed locally).
 - gitleaks, CodeQL, dependency review (GitHub-hosted).
+- Locally, WebKit browser launches occasionally failed (1 ms test failures) when the e2e
+  suite ran alongside a long fuzz run; with the machine idle the full suite passes.
 - **Nothing has been pushed, so CI has never actually run.** First-run risks to watch: Firefox
   (never run), Linux rendering differences in golden-image tests (1% pixel tolerance), and
   Lighthouse scores on CI hardware.

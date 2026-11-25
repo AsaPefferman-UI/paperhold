@@ -1,4 +1,5 @@
 // Byte-level image helpers: format sniffing, JPEG EXIF orientation, PNG predictor undo.
+import { unzlibSync } from 'fflate';
 import { PdfToolsError } from './errors.ts';
 
 export type ImageFormat = 'jpeg' | 'png' | 'heic' | 'webp' | 'gif' | 'bmp' | 'avif' | 'unknown';
@@ -115,4 +116,87 @@ export function unpredictPng(
     }
   }
   return out;
+}
+
+const PNG_CHANNELS: Record<number, number> = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 };
+
+/**
+ * Check a PNG's structure and that its image data inflates to exactly the size its header
+ * declares, before handing it to pdf-lib (whose decoder can spin on truncated data).
+ */
+export function validatePng(b: Uint8Array): void {
+  const bad = (why: string) => new PdfToolsError('damaged', `This PNG image is damaged (${why}).`);
+  const view = new DataView(b.buffer, b.byteOffset, b.byteLength);
+  if (sniffImage(b) !== 'png') throw bad('not a PNG');
+  let o = 8;
+  let width = 0;
+  let height = 0;
+  let bitDepth = 0;
+  let colorType = 0;
+  let interlace = 0;
+  const idat: Uint8Array[] = [];
+  let ended = false;
+  while (o + 12 <= b.length) {
+    const len = view.getUint32(o);
+    const type = ascii(b, o + 4, 4);
+    if (o + 12 + len > b.length) throw bad('truncated chunk');
+    const data = b.subarray(o + 8, o + 8 + len);
+    if (type === 'IHDR') {
+      width = view.getUint32(o + 8);
+      height = view.getUint32(o + 12);
+      bitDepth = b[o + 16]!;
+      colorType = b[o + 17]!;
+      interlace = b[o + 20]!;
+    } else if (type === 'IDAT') idat.push(data);
+    else if (type === 'IEND') {
+      ended = true;
+      break;
+    }
+    o += 12 + len;
+  }
+  const channels = PNG_CHANNELS[colorType];
+  if (
+    !ended ||
+    idat.length === 0 ||
+    !width ||
+    !height ||
+    !channels ||
+    ![1, 2, 4, 8, 16].includes(bitDepth)
+  ) {
+    throw bad('incomplete');
+  }
+  if (width * height > 100_000_000)
+    throw new PdfToolsError('too_large', 'This image is too large to convert.');
+  // Raw size: each row is a filter byte plus packed samples; Adam7 passes each have their own rows.
+  const rowBytes = (w: number) => 1 + Math.ceil((w * channels * bitDepth) / 8);
+  let expected = 0;
+  if (interlace) {
+    const passes = [
+      [0, 0, 8, 8],
+      [4, 0, 8, 8],
+      [0, 4, 4, 8],
+      [2, 0, 4, 4],
+      [0, 2, 2, 4],
+      [1, 0, 2, 2],
+      [0, 1, 1, 2],
+    ] as const;
+    for (const [x0, y0, dx, dy] of passes) {
+      const pw = Math.ceil((width - x0) / dx);
+      const ph = Math.ceil((height - y0) / dy);
+      if (pw > 0 && ph > 0) expected += rowBytes(pw) * ph;
+    }
+  } else expected = rowBytes(width) * height;
+  const all = new Uint8Array(idat.reduce((n, d) => n + d.length, 0));
+  let p = 0;
+  for (const d of idat) {
+    all.set(d, p);
+    p += d.length;
+  }
+  let raw: Uint8Array;
+  try {
+    raw = unzlibSync(all, { out: new Uint8Array(expected) });
+  } catch {
+    throw bad('corrupt image data');
+  }
+  if (raw.length !== expected) throw bad('image data does not match its size');
 }

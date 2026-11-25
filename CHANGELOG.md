@@ -6,6 +6,23 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Changed
+
+- Product named **Paperhold** (paperhold.app): launch config, Cloudflare project, docs, icons and
+  social images. Release artifact renamed to `paperhold-site.tar.gz`.
+- Tool routes moved to `apps/web/src/routes.tsx`, with a test that every tool has a route.
+- CI fixes from the first GitHub runs: reviewed gitleaks false positive ignored by fingerprint;
+  self-host image on nginx mainline with `apk upgrade` (Trivy clean); Lighthouse retries only on
+  tool crashes; axe scans quarantined in Firefox (page-process crash, see `docs/STATUS.md`);
+  offline test skipped in Firefox (Playwright limitation); slower CI WebKit allowed more time for
+  the 1000-page thumbnail test.
+
+### Documentation
+
+- New `docs/ARCHITECTURE.md` (maintainer guide: request flow, adding a tool, engine upgrades,
+  testing layers) and `docs/README.md` (index of current vs historical docs). `SPEC.md` and
+  `STANDARDS.md` marked historical. `docs/STATUS.md` and `docs/LAUNCH.md` brought up to date.
+
 ### Added
 
 - M1 foundation: Vite + React app, typed worker protocol and worker pool with timeouts and

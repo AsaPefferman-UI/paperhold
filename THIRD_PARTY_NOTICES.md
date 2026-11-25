@@ -1,6 +1,6 @@
 # Third-party notices
 
-pdf-tools is licensed under AGPL-3.0-only (see `LICENSE`). It ships the following third-party
+Paperhold is licensed under AGPL-3.0-only (see `LICENSE`). It ships the following third-party
 software in its browser bundle. Each keeps its own license; the full texts are in the packages
 under `node_modules/<name>/` and are included in release artifacts.
 

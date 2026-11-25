@@ -1,5 +1,10 @@
 # Spec 03 — PDF Tools (free alternative to Adobe Acrobat / Smallpdf / iLovePDF)
 
+> **Historical document.** This is the original build specification for Paperhold (codename
+> `pdf-tools`). It is kept because ADRs and tests cite its section numbers; it is not maintained.
+> For how the app works today, read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and
+> [docs/STATUS.md](docs/STATUS.md).
+
 > Codename `pdf-tools` is a placeholder. Read `../STANDARDS.md` first. **This spec overrides STANDARDS in one big way: there is no backend for file processing.** Every operation runs in the user's browser. There is no database, no accounts, and no upload, so the auth, tenancy, and upload sections of STANDARDS don't apply. The CI, supply-chain, testing, accessibility, and release sections apply in full.
 
 ## 1. Summary

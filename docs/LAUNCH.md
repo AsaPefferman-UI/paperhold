@@ -3,6 +3,11 @@
 Everything in the repository is ready; these steps need your accounts and decisions. Do them in
 order. Each one says exactly what to do and how to know it worked.
 
+**Progress (November 2026):** steps 1-3 and 5 are done (name Paperhold, `site.config.ts`,
+`wrangler.toml`, images regenerated, `check:launch` passes). Step 6 is done (public repo
+`AsaPefferman-UI/paperhold`, commits use a GitHub no-reply email) and step 7 is done (CI green).
+Next: register paperhold.app, then step 4 (mailboxes) and step 8 onward.
+
 ## A. Name, domain and contacts
 
 1. **Choose the product name and domain.** Buy the domain (any registrar; Cloudflare Registrar

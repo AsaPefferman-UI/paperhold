@@ -27,6 +27,11 @@ pnpm build && pnpm test:e2e   # end-to-end tests against the production build
 - `apps/web`: the Vite + React app. PDF work runs in Web Workers via `src/worker/pool.ts`.
 - `docs/adr`: architecture decisions. Write one before adding a framework or a heavy dependency.
 
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) has the request flow, the step-by-step checklist for
+adding a tool, and how to upgrade pdf.js, tesseract and qpdf. `SPEC.md` and `STANDARDS.md` are
+historical build documents; where they disagree with the code or the architecture guide, the code
+and the guide win.
+
 ## Rules that CI enforces
 
 - TypeScript strict, ESLint strict with zero warnings, Prettier.

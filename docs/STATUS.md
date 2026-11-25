@@ -1,7 +1,9 @@
 # Status
 
-Last updated: M6 complete. All six milestones are done; what remains before public launch is
-owner setup ([LAUNCH.md](LAUNCH.md)) and the checks below that only CI or a human can do.
+Last updated: November 2026. All six milestones are done, the product is named **Paperhold**
+(paperhold.app), the repository is public at github.com/AsaPefferman-UI/paperhold, and CI is
+green on `main`. What remains before public launch is owner setup in [LAUNCH.md](LAUNCH.md)
+(domain, mailboxes, Cloudflare, first release) and the human checks listed below.
 
 ## Milestones
 
@@ -39,17 +41,17 @@ owner setup ([LAUNCH.md](LAUNCH.md)) and the checks below that only CI or a huma
 - Security audit (security-audit skill, quick profile, source-only): 0 confirmed findings; two
   needs-validation leads and two hardening notes, all addressed (`docs/security-review.md`).
 
-## Verified only in CI (not runnable on this machine)
+## Verified in CI (GitHub Actions, ubuntu-latest)
 
-- **Firefox e2e**: Playwright's Firefox fails to launch here (`spawn UNKNOWN`, likely local
-  security software). It is in the CI matrix.
-- **Docker image** build, smoke test and Trivy scan (Docker is not installed locally).
-- gitleaks, CodeQL, dependency review (GitHub-hosted).
-- Locally, WebKit browser launches occasionally failed (1 ms test failures) when the e2e
-  suite ran alongside a long fuzz run; with the machine idle the full suite passes.
-- **Nothing has been pushed, so CI has never actually run.** First-run risks to watch: Firefox
-  (never run), Linux rendering differences in golden-image tests (1% pixel tolerance), and
-  Lighthouse scores on CI hardware.
+All jobs pass on `main`: typecheck, lint, unit tests, coverage, short fuzz pass, build; e2e on
+**Chromium, Firefox and WebKit**; Lighthouse on every page; gitleaks (full history),
+`pnpm audit`, licence allowlist; self-host Docker image build and Trivy scan (0 HIGH/CRITICAL);
+CodeQL. The first runs needed fixes, recorded in the CHANGELOG: a reviewed gitleaks false
+positive, nginx mainline plus `apk upgrade` for Trivy, a crash-only retry in the Lighthouse
+script, and the Firefox quarantine below.
+
+Not runnable on the original dev machine (Windows): Firefox (`spawn UNKNOWN`) and Docker. Both
+run in CI.
 
 ## Known gaps
 
@@ -74,14 +76,12 @@ owner setup ([LAUNCH.md](LAUNCH.md)) and the checks below that only CI or a huma
 
 ## Open questions for the owner
 
-1. Product name and domain, contact mailboxes (all in `apps/web/site.config.ts`).
-2. Analytics: keep none (default) or enable Cloudflare Web Analytics.
-3. Cloudflare account, Pages project, GitHub environments and secrets (LAUNCH.md C-D).
-4. Socket.dev (or similar) for pull-request dependency review.
-5. Brand: confirm or replace the manila-folder visual direction (`DESIGN.md`).
-6. A HEIC photo you own and are happy to publish, for the test corpus.
+1. Analytics: keep none (default) or enable Cloudflare Web Analytics.
+2. Socket.dev (or similar) for pull-request dependency review.
+3. Brand: confirm or replace the manila-folder visual direction (`DESIGN.md`).
+4. A HEIC photo you own and are happy to publish, for the test corpus.
 
 ## Next step
 
-Follow [docs/LAUNCH.md](LAUNCH.md) from step 1. The first real milestone is the first green CI
-run on GitHub (step 7).
+Continue [LAUNCH.md](LAUNCH.md) from section A step 4 (mailboxes) once paperhold.app is
+registered, then sections C to E.

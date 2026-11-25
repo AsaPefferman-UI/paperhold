@@ -28,7 +28,7 @@ your first visit.
 
 See [docs/STATUS.md](docs/STATUS.md) for exactly what is done and verified.
 
-## Run it locally (5 commands)
+## Run it locally (4 commands)
 
 ```sh
 git clone https://github.com/AsaPefferman-UI/paperhold.git && cd paperhold
@@ -56,10 +56,15 @@ It also deploys to any static host. For Cloudflare Pages, the build emits `_head
 ## Project layout
 
 ```
-apps/web         Vite + React app, Web Worker pool, e2e tests
+apps/web         Vite + React app, Web Worker pool, build plugin, e2e tests
 packages/core    Pure PDF operations + typed worker protocol, unit tested in Node
-docs/adr         Architecture decision records
+scripts          Licence check, launch check, image generation, Lighthouse gate
+docs             Architecture guide, status, launch and deploy docs, ADRs
 ```
+
+New to the code? Start with [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): how an operation flows
+from the page to a worker, how to add a tool, and how to upgrade the self-hosted engines. The
+[docs index](docs/README.md) says which documents are current.
 
 ## Contributing and security
 

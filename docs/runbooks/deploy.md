@@ -29,7 +29,7 @@ curl -s https://<your-domain>/sw.js | head -8                        # new VERSI
 
 Then open the site, run Merge, and follow `/privacy` step 1 (Network tab: no uploads).
 Optional: compare deployed files with the release's `SHA256SUMS`, and run
-`gh attestation verify pdf-tools-site.tar.gz --repo <owner>/<repo>`.
+`gh attestation verify paperhold-site.tar.gz --repo <owner>/<repo>`.
 
 ## Roll back
 

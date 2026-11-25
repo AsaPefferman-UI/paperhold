@@ -1,5 +1,11 @@
 # Engineering Standards (applies to every product spec)
 
+> **Historical document.** Engineering standards shared with sibling projects during the build.
+> Its server sections (Next.js, Postgres, Redis, auth, tenancy) do not apply to Paperhold, which is a
+> static, client-only app (ADR 0001). Kept because ADRs, CI comments and scripts cite its section
+> numbers; not maintained. Current practice: [CONTRIBUTING.md](CONTRIBUTING.md) and
+> [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 Every spec in `specs/` inherits this document. When a spec is silent, this document governs. When a spec conflicts with this document, the spec wins **only** if it says so explicitly.
 
 The bar: these products are free, public, and will be attacked and abused on day one. They must be secure by default, survive traffic spikes (a viral launch), and never ship a broken build.

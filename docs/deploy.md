@@ -1,6 +1,6 @@
 # Deploying
 
-pdf-tools is a static site. `pnpm build` writes everything to `apps/web/dist`:
+Paperhold is a static site. `pnpm build` writes everything to `apps/web/dist`:
 
 - `index.html`, one `<route>/index.html` per tool and page (own title, description, canonical
   URL and Open Graph tags), `404.html`, and hashed assets under `assets/`.

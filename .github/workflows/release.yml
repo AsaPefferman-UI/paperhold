@@ -45,11 +45,11 @@ jobs:
         run: |
           cd apps/web/dist
           find . -type f ! -name '*.map' -print0 | sort -z | xargs -0 sha256sum > ../../../SHA256SUMS
-          tar --sort=name --mtime='2024-01-01' --owner=0 --group=0 --numeric-owner -czf ../../../pdf-tools-site.tar.gz .
+          tar --sort=name --mtime='2024-01-01' --owner=0 --group=0 --numeric-owner -czf ../../../paperhold-site.tar.gz .
       - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: |
-            pdf-tools-site.tar.gz
+            paperhold-site.tar.gz
             SHA256SUMS
       - name: GitHub release with hashes
         env:

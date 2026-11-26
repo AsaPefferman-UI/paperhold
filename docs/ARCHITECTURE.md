@@ -162,7 +162,8 @@ Rules of thumb:
 - Use native nesting for a component's states and children (`&:hover`, `& input`, nested
   `@media`), including its `prefers-reduced-motion` override.
 - An element with `.stack` or `.cluster` takes its spacing from `--gap`. Setting `gap` in a
-  component rule has no effect there, because utilities win.
+  component rule has no effect there, because utilities win. `--gap` is registered with
+  `@property { inherits: false }`, so a nested `.stack` never picks up its parent's spacing.
 - A rule that must beat another component's rule with the same specificity raises its own
   specificity (`.field.inline-field`), rather than relying on file load order.
 

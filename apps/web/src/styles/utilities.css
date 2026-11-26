@@ -4,6 +4,13 @@
  *   .stack    vertical flow (grid) with a gap
  *   .cluster  a wrapping row, items centred on the cross axis
  */
+/* --gap must not inherit: a .stack inside a .run (which sets --gap) would otherwise take the
+   parent's spacing instead of its own default. */
+@property --gap {
+  syntax: '*';
+  inherits: false;
+}
+
 @layer utilities {
   .stack {
     display: grid;

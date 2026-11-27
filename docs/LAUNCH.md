@@ -6,7 +6,10 @@ order. Each one says exactly what to do and how to know it worked.
 **Progress (November 2026):** steps 1-3 and 5 are done (name Paperhold, `site.config.ts`,
 `wrangler.toml`, images regenerated, `check:launch` passes). Step 6 is done (public repo
 `AsaPefferman-UI/paperhold`, commits use a GitHub no-reply email) and step 7 is done (CI green).
-Next: register paperhold.app, then step 4 (mailboxes) and step 8 onward.
+paperhold.app is registered (Porkbun). Step 8 repository settings and step 14 environments and
+variables are applied (only the Renovate app and the two Cloudflare secrets are left for you).
+Next: move the domain's nameservers to Cloudflare, then step 4 (mailboxes), steps 9-13, and the
+two secrets in step 14.
 
 ## A. Name, domain and contacts
 
@@ -46,11 +49,16 @@ Next: register paperhold.app, then step 4 (mailboxes) and step 8 onward.
 8. **Repository settings:**
    - Settings → Code security: enable **Private vulnerability reporting**, **Dependabot alerts**,
      and **Secret scanning with push protection**.
-   - Settings → Rules → Rulesets → new **branch** ruleset for `main`: require a pull request with
-     1 approval, require status checks (`Typecheck, lint, unit tests, fuzz, build`, the three
-     `E2E` jobs, `Lighthouse`, `Security`, `Self-host image`, `analyze`), block force pushes.
-   - Rulesets → new **tag** ruleset for `v*`: restrict creation to maintainers, require signed
-     tags.
+   - Settings → Rules → Rulesets → **branch** ruleset `main` (applied): changes reach `main` only
+     through a pull request, with **0 required approvals** (a sole maintainer cannot approve their
+     own PR; raise it once there is a second maintainer), the eight CI checks must pass
+     (`Typecheck, lint, unit tests, fuzz, build`, `E2E (chromium|firefox|webkit)`, `Lighthouse`,
+     `Security`, `Self-host image`, `analyze`), no force pushes, no deletion. `dependency-review`
+     runs on every PR but is not required. No bypass: to push directly in an emergency, disable
+     the ruleset temporarily.
+   - Rulesets → **tag** ruleset `release tags` (applied) for `v*`: only repository admins may
+     create, move or delete them. GitHub rulesets cannot verify tag signatures; signing is step 9,
+     and the tag shows as Verified on GitHub once your key is added.
    - Install the **Renovate** GitHub App for this repository (config is in `renovate.json`).
    - Optional: install **Socket.dev** (or similar) for dependency review on pull requests.
 9. **Signed tags:** set up a GPG or SSH signing key for your Git user
